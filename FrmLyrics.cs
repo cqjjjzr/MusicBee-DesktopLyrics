@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
+using System.Security.Permissions;
 using System.Windows.Forms;
 using Unmanaged;
 
@@ -15,7 +16,7 @@ namespace MusicBeePlugin
         public FrmLyrics(SettingsObj settings, string path, Form owner)
         {
             _path = path;
-            Owner = owner;
+            //Owner = owner;
             _startupSettings = settings;
             
             InitializeComponent();
@@ -234,6 +235,7 @@ namespace MusicBeePlugin
             {
                 var cp = base.CreateParams;
                 cp.ExStyle |= 0x00080000; // This form has to have the WS_EX_LAYERED extended style
+                cp.ExStyle |= 0x00000080;
                 return cp;
             }
         }
