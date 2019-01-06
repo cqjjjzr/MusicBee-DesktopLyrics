@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace MusicBeePlugin
 {
     public partial class Plugin
     {
         public const short PluginInfoVersion = 1;
-        public const short MinInterfaceVersion = 36;
-        public const short MinApiRevision = 48;
+        public const short MinInterfaceVersion = 39;
+        public const short MinApiRevision = 51;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct MusicBeeApiInterface
@@ -28,6 +29,8 @@ namespace MusicBeePlugin
                     CopyMemory(ref this, apiInterfacePtr, 604);
                 else if (MusicBeeVersion == MusicBeeVersion.v2_5)
                     CopyMemory(ref this, apiInterfacePtr, 648);
+                else if (MusicBeeVersion == MusicBeeVersion.v3_0)
+                    CopyMemory(ref this, apiInterfacePtr, 652);
                 else
                     CopyMemory(ref this, apiInterfacePtr, Marshal.SizeOf(this));
             }
@@ -46,8 +49,10 @@ namespace MusicBeePlugin
                         return MusicBeeVersion.v2_4;
                     else if (ApiRevision <= 47)
                         return MusicBeeVersion.v2_5;
-                    else
+                    else if (ApiRevision <= 48)
                         return MusicBeeVersion.v3_0;
+                    else
+                        return MusicBeeVersion.v3_1;
                 }
             }
             public short InterfaceVersion;
@@ -240,6 +245,15 @@ namespace MusicBeePlugin
             public Player_SetOutputDeviceDelegate Player_SetOutputDevice;
             // api version 48
             public MB_UninistallPluginDelegate MB_UninstallPlugin;
+            // api version 50
+            public Player_ActionDelegate Player_PlayPreviousAlbum;
+            public Player_ActionDelegate Player_PlayNextAlbum;
+            // api version 51
+            public Podcasts_QuerySubscriptionsDelegate Podcasts_QuerySubscriptions;
+            public Podcasts_GetSubscriptionDelegate Podcasts_GetSubscription;
+            public Podcasts_GetSubscriptionArtworkDelegate Podcasts_GetSubscriptionArtwork;
+            public Podcasts_GetSubscriptionEpisodesDelegate Podcasts_GetSubscriptionEpisodes;
+            public Podcasts_GetSubscriptionEpisodeDelegate Podcasts_GetSubscriptionEpisode;
         }
 
         public enum MusicBeeVersion
@@ -250,7 +264,8 @@ namespace MusicBeePlugin
             v2_3 = 3,
             v2_4 = 4,
             v2_5 = 5,
-            v3_0 = 6
+            v3_0 = 6,
+            v3_1 = 7
         }
 
         public enum PluginType
@@ -267,7 +282,8 @@ namespace MusicBeePlugin
             DSP = 9,
             TagRetrieval = 10,
             TagOrArtworkRetrieval = 11,
-            Upnp = 12
+            Upnp = 12,
+            WebBrowser = 13
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -308,7 +324,7 @@ namespace MusicBeePlugin
             AutoDjStopped = 4,
             VolumeMuteChanged = 5,
             VolumeLevelChanged = 6,
-            NowPlayingListChanged = 7,
+            [Obsolete("Use PlayingTracksChanged")] NowPlayingListChanged = 7,
             NowPlayingListEnded = 18,
             NowPlayingArtworkReady = 8,
             NowPlayingLyricsReady = 9,
@@ -334,7 +350,9 @@ namespace MusicBeePlugin
             FileAddedToInbox = 31,
             SynchCompleted = 32,
             DownloadCompleted = 33,
-            MusicBeeStarted = 34
+            MusicBeeStarted = 34,
+            PlayingTracksChanged = 35,
+            PlayingTracksQueueChanged = 36
         }
 
         public enum PluginCloseReason
@@ -458,9 +476,32 @@ namespace MusicBeePlugin
             Virtual14 = 139,
             Virtual15 = 140,
             Virtual16 = 141,
-            Year = 88
+            Virtual17 = 149,
+            Virtual18 = 150,
+            Virtual19 = 151,
+            Virtual20 = 152,
+            Virtual21 = 153,
+            Virtual22 = 154,
+            Virtual23 = 155,
+            Virtual24 = 156,
+            Virtual25 = 157,
+            Year = 88,
+            SortTitle = 163,
+            SortAlbum = 164,
+            SortAlbumArtist = 165,
+            SortArtist = 166,
+            SortComposer = 167,
+            Work = 168,
+            MovementName = 169,
+            MovementNo = 170,
+            MovementCount = 171,
+            ShowMovement = 172,
+            Language = 173,
+            OriginalArtist = 174,
+            OriginalYear = 175,
+            OriginalTitle = 177
         }
-        
+
         public enum FileCodec
         {
             Unknown = -1,
@@ -502,6 +543,7 @@ namespace MusicBeePlugin
 
         public enum DeviceIdType
         {
+            MusicBeeNativeId = 0,
             GooglePlay = 1,
             AppleDevice = 2,
             GooglePlay2 = 3,
@@ -534,18 +576,30 @@ namespace MusicBeePlugin
             CustomWebLinkName4 = 14,
             CustomWebLinkName5 = 15,
             CustomWebLinkName6 = 16,
+            CustomWebLinkName7 = 29,
+            CustomWebLinkName8 = 30,
+            CustomWebLinkName9 = 31,
+            CustomWebLinkName10 = 32,
             CustomWebLink1 = 17,
             CustomWebLink2 = 18,
             CustomWebLink3 = 19,
             CustomWebLink4 = 20,
             CustomWebLink5 = 21,
             CustomWebLink6 = 22,
+            CustomWebLink7 = 33,
+            CustomWebLink8 = 34,
+            CustomWebLink9 = 35,
+            CustomWebLink10 = 36,
             CustomWebLinkNowPlaying1 = 23,
             CustomWebLinkNowPlaying2 = 24,
             CustomWebLinkNowPlaying3 = 25,
             CustomWebLinkNowPlaying4 = 26,
             CustomWebLinkNowPlaying5 = 27,
-            CustomWebLinkNowPlaying6 = 28
+            CustomWebLinkNowPlaying6 = 28,
+            CustomWebLinkNowPlaying7 = 37,
+            CustomWebLinkNowPlaying8 = 38,
+            CustomWebLinkNowPlaying9 = 39,
+            CustomWebLinkNowPlaying10 = 40
         }
 
         public enum ComparisonType
@@ -603,6 +657,7 @@ namespace MusicBeePlugin
 
         public enum SkinElement
         {
+            SkinSubPanel = 0,
             SkinInputControl = 7,
             SkinInputPanel = 10,
             SkinInputPanelLabel = 14,
@@ -677,6 +732,27 @@ namespace MusicBeePlugin
             Desktop = 2
         }
 
+        public enum SubscriptionMetaDataType
+        {
+            Id = 0,
+            Title = 1,
+            Grouping = 2,
+            Genre = 3,
+            Description = 4,
+            DounloadedCount = 5
+        }
+
+        public enum EpisodeMetaDataType
+        {
+            Id = 0,
+            Title = 1,
+            DateTime = 2,
+            Description = 3,
+            Duration = 4,
+            IsDownloaded = 5,
+            HasBeenPlayed = 6
+        }
+
         public delegate void MB_ReleaseStringDelegate(string p1);
         public delegate void MB_TraceDelegate(string p1);
         public delegate IntPtr MB_WindowHandleDelegate();
@@ -712,29 +788,29 @@ namespace MusicBeePlugin
         public delegate DataType Setting_GetDataTypeDelegate(MetaDataType field);
         public delegate string Setting_GetLastFmUserIdDelegate();
         public delegate string Setting_GetWebProxyDelegate();
-        public delegate bool Setting_GetValueDelegate(SettingId settingId, ref object value);
+        public delegate bool Setting_GetValueDelegate(SettingId settingId, out object value);
         public delegate string Setting_GetFileConvertCommandLineDelegate(FileCodec codec, EncodeQuality encodeQuality);
         public delegate string Library_GetFilePropertyDelegate(string sourceFileUrl, FilePropertyType type);
         public delegate string Library_GetFileTagDelegate(string sourceFileUrl, MetaDataType field);
-        public delegate bool Library_GetFileTagsDelegate(string sourceFileUrl, MetaDataType[] fields, ref string[] results);
+        public delegate bool Library_GetFileTagsDelegate(string sourceFileUrl, MetaDataType[] fields, out string[] results);
         public delegate bool Library_SetFileTagDelegate(string sourceFileUrl, MetaDataType field, string value);
         public delegate string Library_GetDevicePersistentIdDelegate(string sourceFileUrl, DeviceIdType idType);
         public delegate bool Library_SetDevicePersistentIdDelegate(string sourceFileUrl, DeviceIdType idType, string value);
-        public delegate bool Library_FindDevicePersistentIdDelegate(DeviceIdType idType, string[] ids, ref string[] values);
+        public delegate bool Library_FindDevicePersistentIdDelegate(DeviceIdType idType, string[] ids, out string[] values);
         public delegate bool Library_CommitTagsToFileDelegate(string sourceFileUrl);
         public delegate string Library_AddFileToLibraryDelegate(string sourceFileUrl, LibraryCategory category);
-        public delegate bool Library_GetSyncDeltaDelegate(string[] cachedFiles, DateTime updatedSince, LibraryCategory categories, ref string[] newFiles, ref string[] updatedFiles, ref string[] deletedFiles);
+        public delegate bool Library_GetSyncDeltaDelegate(string[] cachedFiles, DateTime updatedSince, LibraryCategory categories, out string[] newFiles, out string[] updatedFiles, out string[] deletedFiles);
         public delegate string Library_GetLyricsDelegate(string sourceFileUrl, LyricsType type);
         public delegate string Library_GetArtworkDelegate(string sourceFileUrl, int index);
-        public delegate bool Library_GetArtworkExDelegate(string sourceFileUrl, int index, bool retrievePictureData, ref PictureLocations pictureLocations, ref string pictureUrl, ref byte[] imageData);
+        public delegate bool Library_GetArtworkExDelegate(string sourceFileUrl, int index, bool retrievePictureData, out PictureLocations pictureLocations, out string pictureUrl, out byte[] imageData);
         public delegate bool Library_SetArtworkExDelegate(string sourceFileUrl, int index, byte[] imageData);
         public delegate string Library_GetArtistPictureDelegate(string artistName, int fadingPercent, int fadingColor);
-        public delegate bool Library_GetArtistPictureUrlsDelegate(string artistName, bool localOnly, ref string[] urls);
+        public delegate bool Library_GetArtistPictureUrlsDelegate(string artistName, bool localOnly, out string[] urls);
         public delegate string Library_GetArtistPictureThumbDelegate(string artistName);
         public delegate bool Library_QueryFilesDelegate(string query);
         public delegate string Library_QueryGetNextFileDelegate();
         public delegate string Library_QueryGetAllFilesDelegate();
-        public delegate bool Library_QueryFilesExDelegate(string query, ref string[] files);
+        public delegate bool Library_QueryFilesExDelegate(string query, out string[] files);
         public delegate string Library_QuerySimilarArtistsDelegate(string artistName, double minimumArtistSimilarityRating);
         public delegate bool Library_QueryLookupTableDelegate(string keyTags, string valueTags, string query);
         public delegate string Library_QueryGetLookupTableValueDelegate(string key);
@@ -776,11 +852,11 @@ namespace MusicBeePlugin
         public delegate int NowPlaying_GetDurationDelegate();
         public delegate string NowPlaying_GetFilePropertyDelegate(FilePropertyType type);
         public delegate string NowPlaying_GetFileTagDelegate(MetaDataType field);
-        public delegate bool NowPlaying_GetFileTagsDelegate(MetaDataType[] fields, ref string[] results);
+        public delegate bool NowPlaying_GetFileTagsDelegate(MetaDataType[] fields, out string[] results);
         public delegate string NowPlaying_GetLyricsDelegate();
         public delegate string NowPlaying_GetArtworkDelegate();
         public delegate string NowPlaying_GetArtistPictureDelegate(int fadingPercent);
-        public delegate bool NowPlaying_GetArtistPictureUrlsDelegate(bool localOnly, ref string[] urls);
+        public delegate bool NowPlaying_GetArtistPictureUrlsDelegate(bool localOnly, out string[] urls);
         public delegate string NowPlaying_GetArtistPictureThumbDelegate();
         public delegate bool NowPlaying_IsSoundtrackDelegate();
         public delegate int NowPlaying_GetSpectrumDataDelegate(float[] fftData);
@@ -792,7 +868,7 @@ namespace MusicBeePlugin
         public delegate string NowPlayingList_GetFileUrlDelegate(int index);
         public delegate string NowPlayingList_GetFilePropertyDelegate(int index, FilePropertyType type);
         public delegate string NowPlayingList_GetFileTagDelegate(int index, MetaDataType field);
-        public delegate bool NowPlayingList_GetFileTagsDelegate(int index, MetaDataType[] fields, ref string[] results);
+        public delegate bool NowPlayingList_GetFileTagsDelegate(int index, MetaDataType[] fields, out string[] results);
         public delegate bool NowPlayingList_ActionDelegate();
         public delegate bool NowPlayingList_FileActionDelegate(string sourceFileUrl);
         public delegate bool NowPlayingList_FilesActionDelegate(string[] sourceFileUrl);
@@ -804,7 +880,7 @@ namespace MusicBeePlugin
         public delegate string Playlist_QueryGetNextPlaylistDelegate();
         public delegate bool Playlist_IsInListDelegate(string playlistUrl, string filename);
         public delegate bool Playlist_QueryFilesDelegate(string playlistUrl);
-        public delegate bool Playlist_QueryFilesExDelegate(string playlistUrl, ref string[] filenames);
+        public delegate bool Playlist_QueryFilesExDelegate(string playlistUrl, out string[] filenames);
         public delegate string Playlist_CreatePlaylistDelegate(string folderName, string playlistName, string[] filenames);
         public delegate bool Playlist_DeletePlaylistDelegate(string playlistUrl);
         public delegate bool Playlist_SetFilesDelegate(string playlistUrl, string[] filenames);
@@ -815,11 +891,16 @@ namespace MusicBeePlugin
         public delegate string Pending_GetFileUrlDelegate();
         public delegate string Pending_GetFilePropertyDelegate(FilePropertyType field);
         public delegate string Pending_GetFileTagDelegate(MetaDataType field);
+        public delegate bool Podcasts_QuerySubscriptionsDelegate(string query, out string[] ids);
+        public delegate bool Podcasts_GetSubscriptionDelegate(string id, out string[] subscription);
+        public delegate bool Podcasts_GetSubscriptionArtworkDelegate(string id, int index, out byte[] imageData);
+        public delegate bool Podcasts_GetSubscriptionEpisodesDelegate(string id, out string[] urls);
+        public delegate bool Podcasts_GetSubscriptionEpisodeDelegate(string id, int index, out string[] episode);
         public delegate string Sync_FileStartDelegate(string filename);
         public delegate void Sync_FileEndDelegate(string filename, bool success, string errorMessage);
 
         [System.Security.SuppressUnmanagedCodeSecurity()]
         [DllImport("kernel32.dll")]
         private static extern void CopyMemory(ref MusicBeeApiInterface mbApiInterface, IntPtr src, int length);
-    }
+    };
 }

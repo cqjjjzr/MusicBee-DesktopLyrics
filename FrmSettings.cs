@@ -9,24 +9,24 @@ namespace MusicBeePlugin
 {
     public partial class FrmSettings : Form
     {
-        private readonly string savePath;
+        private readonly string _savePath;
 
         private Font _font = DefaultFont;
         private readonly ColorPickerDialog _colorDialog = new ColorPickerDialog();
         public FrmSettings(string path)
         {
             InitializeComponent();
-            savePath = path;
+            _savePath = path;
             cbxGradientType.SelectedIndex = 0;
         }
 
         private void Settings_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(savePath)) return;
+            if (!File.Exists(_savePath)) return;
 
             try
             {
-                var config = JsonConvert.DeserializeObject<SettingsObj>(File.ReadAllText(savePath));
+                var config = JsonConvert.DeserializeObject<SettingsObj>(File.ReadAllText(_savePath));
                 try
                 {
                     _font = FontSerializationHelper.Deserialize(config.Font);
@@ -80,24 +80,18 @@ namespace MusicBeePlugin
                 BorderColor = btnBorderColor.BackColor,
                 GradientType = cbxGradientType.SelectedIndex
             };
-            File.WriteAllText(savePath, JsonConvert.SerializeObject(settings));
+            File.WriteAllText(_savePath, JsonConvert.SerializeObject(settings));
         }
 
-        public SettingsObj Settings
+        public SettingsObj Settings => new SettingsObj
         {
-            get
-            {
-                return new SettingsObj
-                {
-                    Font = FontSerializationHelper.Serialize(_font),
-                    Color1 = btnColor1.BackColor,
-                    Color2 = btnColor2.BackColor,
-                    BorderColor = btnBorderColor.BackColor,
-                    GradientType = cbxGradientType.SelectedIndex,
-                    FontActual = _font
-                };
-            }
-        }
+            Font = FontSerializationHelper.Serialize(_font),
+            Color1 = btnColor1.BackColor,
+            Color2 = btnColor2.BackColor,
+            BorderColor = btnBorderColor.BackColor,
+            GradientType = cbxGradientType.SelectedIndex,
+            FontActual = _font
+        };
     }
 
     public class SettingsObj

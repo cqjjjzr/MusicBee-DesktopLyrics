@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Timers;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -12,43 +13,44 @@ namespace MusicBeePlugin
 {
     public partial class Plugin
     {
-        private const long UpdateIntervalMs = 300L;
+        private const long UpdateIntervalMs = 50L;
         private const string SettingsFileName = "desktopLyrics.json";
         private const string SettingsFileName2 = "desktopLyrics_Window.set";
 
         // MB related
-        private MusicBeeApiInterface mbApiInterface;
-        private readonly PluginInfo about = new PluginInfo();
-        private string SettingsPath => Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName);
-        public string SettingsPath2 => Path.Combine(mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName2);
+        private MusicBeeApiInterface _mbApiInterface;
+        private readonly PluginInfo _about = new PluginInfo();
+        private string SettingsPath => Path.Combine(_mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName);
+        public string SettingsPath2 => Path.Combine(_mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName2);
         // Customed
         private volatile SettingsObj _settings;
         private volatile FrmLyrics _frmLyrics;
         private Timer _timer;
         private LyricsController _lyricsCtrl;
-
-        //private 
+        
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
-            mbApiInterface = new MusicBeeApiInterface();
-            mbApiInterface.Initialise(apiInterfacePtr);
-            about.PluginInfoVersion = PluginInfoVersion;
-            about.Name = "Desktop Lyrics";
-            about.Description = "Display lyrics on your desktop!";
-            about.Author = "Charlie Jiang";
-            about.TargetApplication = "";   // current only applies to artwork, lyrics or instant messenger name that appears in the provider drop down selector or target Instant Messenger
-            about.Type = PluginType.General;
-            about.VersionMajor = 1;  // your plugin version
-            about.VersionMinor = 0;
-            about.Revision = 1;
-            about.MinInterfaceVersion = MinInterfaceVersion;
-            about.MinApiRevision = MinApiRevision;
-            about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
-            about.ConfigurationPanelHeight = 32;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+            var versions = Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
 
-            _lyricsCtrl = new LyricsController(mbApiInterface);
-            return about;
+            _mbApiInterface = new MusicBeeApiInterface();
+            _mbApiInterface.Initialise(apiInterfacePtr);
+            _about.PluginInfoVersion = PluginInfoVersion;
+            _about.Name = "Desktop Lyrics";
+            _about.Description = "Display lyrics on your desktop!";
+            _about.Author = "Charlie Jiang";
+            _about.TargetApplication = "";   // current only applies to artwork, lyrics or instant messenger name that appears in the provider drop down selector or target Instant Messenger
+            _about.Type = PluginType.General;
+            _about.VersionMajor = short.Parse(versions[0]);  // your plugin version
+            _about.VersionMinor = short.Parse(versions[1]);
+            _about.Revision = short.Parse(versions[2]);
+            _about.MinInterfaceVersion = MinInterfaceVersion;
+            _about.MinApiRevision = MinApiRevision;
+            _about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
+            _about.ConfigurationPanelHeight = 32;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+
+            _lyricsCtrl = new LyricsController(_mbApiInterface);
+            return _about;
         }
 
         public bool Configure(IntPtr panelHandle)
@@ -83,7 +85,7 @@ namespace MusicBeePlugin
         public void Close(PluginCloseReason reason)
         {
             _timer.Stop();
-            Control.FromHandle(mbApiInterface.MB_GetWindowHandle()).Invoke(new Action(() =>
+            Control.FromHandle(_mbApiInterface.MB_GetWindowHandle()).Invoke(new Action(() =>
             {
                 _frmLyrics?.Dispose();
                 _frmLyrics = null;
@@ -122,13 +124,8 @@ namespace MusicBeePlugin
                             };
                         }
 
-                        _frmLyrics?.Dispose();
-                        var f = (Form) Control.FromHandle(mbApiInterface.MB_GetWindowHandle());
-                        f.Invoke(new Action(() =>
-                        {
-                            _frmLyrics = new FrmLyrics(_settings, SettingsPath2, f);
-                            _frmLyrics.Show();
-                        }));
+                        StartupMenuItem();
+                        StartupForm();
 
                         if (_timer != null && _timer.Enabled) _timer.Enabled = false;
                         _timer = new Timer(UpdateIntervalMs) {AutoReset = false};
@@ -137,12 +134,39 @@ namespace MusicBeePlugin
                     }
                     catch (Exception e)
                     {
-                        mbApiInterface.MB_Trace(e.ToString());
+                        _mbApiInterface.MB_Trace(e.ToString());
                     }
                     break;
             }
         }
-        
+
+        private void StartupMenuItem()
+        {
+            var menuItem = (ToolStripMenuItem) _mbApiInterface.MB_AddMenuItem("mnuView/Desktop Lyrics", "Toggle Desktop Lyrics visibility.",
+                (sender, args) =>
+                { });
+            menuItem.CheckOnClick = true;
+            menuItem.Checked = true;
+            menuItem.CheckedChanged += (sender, args) =>
+            {
+                if (!menuItem.Checked)
+                    _frmLyrics?.Dispose();
+                else
+                    StartupForm();
+            };
+        }
+
+        private void StartupForm()
+        {
+            _frmLyrics?.Dispose();
+            var f = (Form)Control.FromHandle(_mbApiInterface.MB_GetWindowHandle());
+            f.Invoke(new Action(() =>
+            {
+                _frmLyrics = new FrmLyrics(_settings, SettingsPath2);
+                _frmLyrics.Show();
+            }));
+        }
+
         private void TimerTick(object sender, ElapsedEventArgs args)
         {
             Debug.Assert(sender is Timer);
@@ -152,7 +176,7 @@ namespace MusicBeePlugin
             }
             catch (Exception e)
             {
-                mbApiInterface.MB_Trace(e.ToString());
+                _mbApiInterface.MB_Trace(e.ToString());
             }
             ((Timer) sender).Start();
         }

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
-using System.Security.Permissions;
 using System.Windows.Forms;
 using Unmanaged;
 
@@ -13,10 +12,9 @@ namespace MusicBeePlugin
     {
         private readonly SettingsObj _startupSettings;
         private readonly string _path;
-        public FrmLyrics(SettingsObj settings, string path, Form owner)
+        public FrmLyrics(SettingsObj settings, string path)
         {
             _path = path;
-            //Owner = owner;
             _startupSettings = settings;
             
             InitializeComponent();

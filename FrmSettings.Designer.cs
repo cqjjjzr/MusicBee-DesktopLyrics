@@ -143,8 +143,8 @@
             this.Controls.Add(this.btnColor1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnFont);
-            this.Name = "Settings";
-            this.Text = "SettingsForm";
+            this.Name = "FrmSettings";
+            this.Text = "Desktop Lyrics Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Settings_FormClosed);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.ResumeLayout(false);

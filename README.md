@@ -17,6 +17,8 @@ For users who aren't in China:
 
 Just install this plugin in the Plugins tab in the Settings or put the DLL file into the Plugins of your MusicBee installation, and then enable it, set the lyrics style in the settings, and you're ready to rock!
 
+Also, lyrics style can be modified in the Plugins tab. And you can hide or show the desktop lyrics in the MusicBee Menu(View->Desktop Lyrics).
+
 # Chinese version
 
 ## MusicBee 桌面歌词
