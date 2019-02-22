@@ -104,6 +104,7 @@
     <Compile Include="GdiplusPInvoke.cs" />
     <Compile Include="LyricParser.cs" />
     <Compile Include="LyricsController.cs" />
+    <Compile Include="LyricsRenderer.cs" />
     <Compile Include="MusicBeeInterface.cs" />
     <Compile Include="DesktopLyrics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,11 +172,8 @@
     <PropertyGroup>
       <MyAssemblies>$(TargetPath)</MyAssemblies>
     </PropertyGroup>
-    <GetAssemblyIdentity
-        AssemblyFiles="$(MyAssemblies)">
-      <Output
-          TaskParameter="Assemblies"
-          ItemName="MyAssemblyIdentities"/>
+    <GetAssemblyIdentity AssemblyFiles="$(MyAssemblies)">
+      <Output TaskParameter="Assemblies" ItemName="MyAssemblyIdentities" />
     </GetAssemblyIdentity>
     <RemoveDir Directories="@(ZipFiles)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="pkgtemp\" />

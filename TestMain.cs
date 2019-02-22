@@ -7,7 +7,7 @@ namespace MusicBeePlugin
     public class TestMain
     {
         [STAThread]
-        public static void Main(string[] args)
+        public static void Main2(string[] args)
         {
             Application.EnableVisualStyles();
             Application.Run(new FrmLyrics(new SettingsObj

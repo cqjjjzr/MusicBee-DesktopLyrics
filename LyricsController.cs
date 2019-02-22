@@ -24,11 +24,11 @@
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.TrackTitle) + " - " +
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.Artist), null);
             var time = _interface.Player_GetPosition();
-            var nTime = (double) time / 1000 + _lyrics.Offset;
+            var nTime = time + _lyrics.Offset;
             var entries = _lyrics.Entries;
             for (var i = 0; i < entries.Count; i++)
             {
-                if (entries[i].Time > nTime && i > 0)
+                if (entries[i].TimeMs > nTime && i > 0)
                 {
                     return entries[i - 1];
                 }

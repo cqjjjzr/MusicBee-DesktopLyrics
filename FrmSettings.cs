@@ -106,7 +106,7 @@ namespace MusicBeePlugin
         public Font FontActual
         {
             get => FontSerializationHelper.Deserialize(Font);
-            set => FontSerializationHelper.Serialize(value);
+            set => Font = FontSerializationHelper.Serialize(value);
         }
     }
 

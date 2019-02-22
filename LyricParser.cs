@@ -45,7 +45,7 @@ namespace MusicBeePlugin
 
                     foreach (Match item in timeMatch)
                     {
-                        var time = TimeSpan.Parse("00:" + item.Groups[1].Value).TotalSeconds;
+                        var time = TimeSpan.Parse("00:" + item.Groups[1].Value).TotalMilliseconds;
                         rawLyrics.Add(new RawLyricEntry(time, word));
                     }
                 }
@@ -85,20 +85,20 @@ namespace MusicBeePlugin
 
         public class LyricEntry
         {
-            public double Time { get; set; }
+            public double TimeMs { get; set; }
             public string LyricLine1 { get; set; }
             public string LyricLine2 { get; set; }
 
             public LyricEntry(double time, string lyricLine1, string lyricLine2)
             {
-                Time = time;
+                TimeMs = time;
                 LyricLine1 = lyricLine1;
                 LyricLine2 = lyricLine2;
             }
 
             public override string ToString()
             {
-                return "[Lyric time=" + Time + " line1=" + LyricLine1 + " line2=" + LyricLine2 + "]\r";
+                return "[Lyric time=" + TimeMs + " line1=" + LyricLine1 + " line2=" + LyricLine2 + "]\r";
             }
 
             public class LyricEntryComparer : Comparer<LyricEntry>
@@ -107,7 +107,7 @@ namespace MusicBeePlugin
                 {
                     if (x == null) return -1;
                     if (y == null) return 1;
-                    return (int)(x.Time - y.Time);
+                    return (int)(x.TimeMs - y.TimeMs);
                 }
             }
         }

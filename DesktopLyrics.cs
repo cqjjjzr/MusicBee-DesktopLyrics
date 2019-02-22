@@ -13,7 +13,7 @@ namespace MusicBeePlugin
 {
     public partial class Plugin
     {
-        private const long UpdateIntervalMs = 50L;
+        private const long UpdateIntervalMs = 100L;
         private const string SettingsFileName = "desktopLyrics.json";
         private const string SettingsFileName2 = "desktopLyrics_Window.set";
 
