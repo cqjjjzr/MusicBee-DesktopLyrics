@@ -10,7 +10,9 @@ namespace MusicBeePlugin
     {
         private static readonly Regex LyricWordRegex = new Regex(@".*\](.*)", RegexOptions.Compiled);
         private static readonly Regex LyricTimeRegex = new Regex(@"\[([0-9.:]*)\]+(.*)", RegexOptions.Compiled);
-        
+
+        public static bool PreserveSlash { get; set; } = false;
+
         public static Lyrics ParseLyric(string lyric)
         {
             var lyricOffset = 0.0;
@@ -65,7 +67,7 @@ namespace MusicBeePlugin
             var entries = new List<LyricEntry>();
             foreach (var rawLyricEntry in rawLyrics)
             {
-                if (rawLyricEntry.LyricLine.Contains("/"))
+                if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
                     var segs = rawLyricEntry.LyricLine.Split(new[] {'/'}, 2);
                     entries.Add(new LyricEntry(rawLyricEntry.Time, segs[0], segs[1]));

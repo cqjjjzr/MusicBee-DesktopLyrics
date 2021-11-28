@@ -101,9 +101,12 @@ namespace MusicBeePlugin
 
         private void FrmLyrics_MouseDown(object sender, MouseEventArgs e)
         {
-            Unmanaged.Unmanaged.ReleaseCapture();
-            if (e.Button != MouseButtons.Left) return;
-            Unmanaged.Unmanaged.SendMessage(Handle, 0x00A1, new IntPtr(0x0002), null);
+            if (Visible)
+            {
+                Unmanaged.Unmanaged.ReleaseCapture();
+                if (e.Button != MouseButtons.Left) return;
+                Unmanaged.Unmanaged.SendMessage(Handle, 0x00A1, new IntPtr(0x0002), null);
+            }
         }
 
         private void FrmLyrics_Move(object sender, EventArgs e)

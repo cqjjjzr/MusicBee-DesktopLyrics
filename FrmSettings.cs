@@ -41,6 +41,8 @@ namespace MusicBeePlugin
                     btnColor1.BackColor = config.Color1;
                     btnColor2.BackColor = config.Color2;
                     btnBorderColor.BackColor = config.BorderColor;
+                    checkBoxPreserveSlash.Checked = config.PreserveSlash;
+                    checkBoxAutoHide.Checked = config.AutoHide;
                 }
                 catch (Exception)
                 {
@@ -78,7 +80,9 @@ namespace MusicBeePlugin
                 Color1 = btnColor1.BackColor,
                 Color2 = btnColor2.BackColor,
                 BorderColor = btnBorderColor.BackColor,
-                GradientType = cbxGradientType.SelectedIndex
+                GradientType = cbxGradientType.SelectedIndex,
+                PreserveSlash = checkBoxPreserveSlash.Checked,
+                AutoHide = checkBoxAutoHide.Checked
             };
             File.WriteAllText(_savePath, JsonConvert.SerializeObject(settings));
         }
@@ -90,8 +94,20 @@ namespace MusicBeePlugin
             Color2 = btnColor2.BackColor,
             BorderColor = btnBorderColor.BackColor,
             GradientType = cbxGradientType.SelectedIndex,
-            FontActual = _font
+            FontActual = _font,
+            PreserveSlash = checkBoxPreserveSlash.Checked,
+            AutoHide = checkBoxAutoHide.Checked
         };
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.PreserveSlash = checkBoxPreserveSlash.Checked;
+        }
+
+        private void checkBoxAutoHide_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.AutoHide = checkBoxAutoHide.Checked;
+        }
     }
 
     public class SettingsObj
@@ -101,6 +117,8 @@ namespace MusicBeePlugin
         public Color Color2;
         public Color BorderColor;
         public int GradientType;
+        public bool PreserveSlash;
+        public bool AutoHide;
         
         [JsonIgnore]
         public Font FontActual
