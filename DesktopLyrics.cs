@@ -70,6 +70,7 @@ namespace MusicBeePlugin
                 _settings = settingsForm.Settings; 
                 File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(_settings));
                 _frmLyrics?.UpdateFromSettings(_settings);
+                LyricParser.PreserveSlash = _settings.PreserveSlash;
             };
             configPanel.Controls.Add(btnSettings);
 
@@ -137,6 +138,28 @@ namespace MusicBeePlugin
                         _mbApiInterface.MB_Trace(e.ToString());
                     }
                     break;
+                case NotificationType.PlayStateChanged:
+                    UpdatePlayState(_mbApiInterface.Player_GetPlayState());
+                    break;
+            }
+        }
+
+        // Change form according to play state
+        private void UpdatePlayState(Plugin.PlayState state)
+        {
+            if (_settings.AutoHide)
+            {
+                if (_frmLyrics != null)
+                {
+                    if (state == Plugin.PlayState.Stopped)
+                    {
+                        _frmLyrics.Visible = false;
+                    }
+                    else if (state == PlayState.Playing)
+                    {
+                        _frmLyrics.Visible = true;
+                    }
+                }
             }
         }
 
