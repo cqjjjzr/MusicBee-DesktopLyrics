@@ -125,6 +125,9 @@ namespace MusicBeePlugin
                             };
                         }
 
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+
                         StartupMenuItem();
                         StartupForm();
 
