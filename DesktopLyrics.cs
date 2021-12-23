@@ -67,10 +67,10 @@ namespace MusicBeePlugin
             };
             btnSettings.Click += (sender, args) =>
             {
-                var settingsForm = new FrmSettings(SettingsPath);
+                var settingsForm = new FrmSettings(_settings);
                 settingsForm.ShowDialog();
                 _settings = settingsForm.Settings; 
-                File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(_settings));
+                SaveSettings(_settings);
                 _frmLyrics?.UpdateFromSettings(_settings);
                 LyricParser.PreserveSlash = _settings.PreserveSlash;
             };
@@ -78,10 +78,15 @@ namespace MusicBeePlugin
 
             return false;
         }
-       
+
+        private void SaveSettings(SettingsObj settings)
+        {
+            File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(settings));
+        }
+
         public void SaveSettings()
         {
-            // we've already saved our settings, so no need to do anything here.
+            // Still, we've saved all settings already.
         }
 
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
@@ -131,7 +136,8 @@ namespace MusicBeePlugin
                         Application.SetCompatibleTextRenderingDefault(false);
 
                         StartupMenuItem();
-                        StartupForm();
+                        if (!_settings.HideOnStartup)
+                            StartupForm();
 
                         if (_timer != null && _timer.Enabled) _timer.Enabled = false;
                         _timer = new Timer(UpdateIntervalMs) {AutoReset = false};
@@ -171,13 +177,15 @@ namespace MusicBeePlugin
                 (sender, args) =>
                 { });
             menuItem.CheckOnClick = true;
-            menuItem.Checked = true;
+            menuItem.Checked = !_settings.HideOnStartup;
             menuItem.CheckedChanged += (sender, args) =>
             {
                 if (!menuItem.Checked)
                     _frmLyrics?.Dispose();
                 else
                     StartupForm();
+                _settings.HideOnStartup = !menuItem.Checked;
+                SaveSettings(_settings);
             };
         }
 
