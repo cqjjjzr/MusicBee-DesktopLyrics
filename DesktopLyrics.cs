@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -11,6 +12,7 @@ using Timer = System.Timers.Timer;
 
 namespace MusicBeePlugin
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public partial class Plugin
     {
         private const long UpdateIntervalMs = 100L;
@@ -148,21 +150,18 @@ namespace MusicBeePlugin
         }
 
         // Change form according to play state
-        private void UpdatePlayState(Plugin.PlayState state)
+        private void UpdatePlayState(PlayState state)
         {
-            if (_settings.AutoHide)
+            if (!_settings.AutoHide) return;
+            if (_frmLyrics == null) return;
+            switch (state)
             {
-                if (_frmLyrics != null)
-                {
-                    if (state == Plugin.PlayState.Stopped)
-                    {
-                        _frmLyrics.Visible = false;
-                    }
-                    else if (state == PlayState.Playing)
-                    {
-                        _frmLyrics.Visible = true;
-                    }
-                }
+                case PlayState.Stopped:
+                    _frmLyrics.Visible = false;
+                    break;
+                case PlayState.Playing:
+                    _frmLyrics.Visible = true;
+                    break;
             }
         }
 
