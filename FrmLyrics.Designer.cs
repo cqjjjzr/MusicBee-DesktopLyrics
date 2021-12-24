@@ -50,7 +50,6 @@ namespace MusicBeePlugin
             this.Load += new System.EventHandler(this.FrmLyrics_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrmLyrics_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrmLyrics_MouseUp);
-            this.Move += new System.EventHandler(this.FrmLyrics_Move);
             this.ResumeLayout(false);
 
         }

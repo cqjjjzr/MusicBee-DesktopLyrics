@@ -17,7 +17,7 @@ namespace MusicBeePlugin
                 Color2 = Color.LightGray,
                 FontActual = new Font(new FontFamily("Microsoft Yahei"), 34.0f, FontStyle.Regular, GraphicsUnit.Point),
                 GradientType = 1
-            }, "x.set"));
+            }));
         }
     }
 }

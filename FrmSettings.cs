@@ -95,7 +95,9 @@ namespace MusicBeePlugin
         public bool PreserveSlash = false;
         public bool AutoHide = false;
         public bool HideOnStartup = false;
-        
+        public int PosY = -1;
+        public int PosX = -1;
+
         [JsonIgnore]
         public Font FontActual
         {

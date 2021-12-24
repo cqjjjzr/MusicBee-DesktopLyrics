@@ -7,12 +7,10 @@ namespace MusicBeePlugin
 {
     public partial class FrmLyrics : Form
     {
-        private readonly SettingsObj _startupSettings;
-        private readonly string _path;
-        public FrmLyrics(SettingsObj settings, string path)
+        private SettingsObj _settings;
+        public FrmLyrics(SettingsObj settings)
         {
-            _path = path;
-            _startupSettings = settings;
+            _settings = settings;
             
             InitializeComponent();
         }
@@ -22,26 +20,32 @@ namespace MusicBeePlugin
             var scrBounds = Screen.PrimaryScreen.Bounds;
             Width = scrBounds.Width;
             Height = 150;
-            try
-            {
-                var coord = File.ReadAllText(_path).Split(' ');
-                Left = int.Parse(coord[0]);
-                Top = int.Parse(coord[1]);
-            }
-            catch (Exception)
+            if (_settings.PosY < 0)
             {
                 Top = scrBounds.Height - Height - 150;
                 Left = 0;
+            }
+            else
+            {
+                Top = _settings.PosY;
+                Left = _settings.PosX;
             }
 
             TopMost = true;
 
             UnmanagedHelper.SetTopMost(this);
-            UpdateFromSettings(_startupSettings);
+            UpdateFromSettings(_settings);
+
+            Move += (o, args) =>
+            {
+                _settings.PosX = Left;
+                _settings.PosY = Top;
+            };
         }
         
         public void UpdateFromSettings(SettingsObj settings)
         {
+            _settings = settings;
             LyricsRenderer.UpdateFromSettings(settings, Width);
 
             Redraw();
@@ -109,19 +113,12 @@ namespace MusicBeePlugin
             }
         }
 
-        private void FrmLyrics_Move(object sender, EventArgs e)
-        {
-            File.WriteAllText(_path, $@"{Left} {Top}");
-        }
-
         private void FrmLyrics_MouseUp(object sender, MouseEventArgs e)
         {
             // This event is never fired...?
             //if (e.Button != MouseButtons.Left) return;
             //global::Unmanaged.Unmanaged.SendMessage(Handle, 0x00A2, new IntPtr(0x0002), null);
         }
-
-        
 
         protected override CreateParams CreateParams
         {

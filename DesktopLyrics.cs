@@ -69,7 +69,6 @@ namespace MusicBeePlugin
             {
                 var settingsForm = new FrmSettings(_settings);
                 settingsForm.ShowDialog();
-                _settings = settingsForm.Settings; 
                 SaveSettings(_settings);
                 _frmLyrics?.UpdateFromSettings(_settings);
                 LyricParser.PreserveSlash = _settings.PreserveSlash;
@@ -93,11 +92,13 @@ namespace MusicBeePlugin
         public void Close(PluginCloseReason reason)
         {
             _timer.Stop();
-            Control.FromHandle(_mbApiInterface.MB_GetWindowHandle()).Invoke(new Action(() =>
+            var ctrl = Control.FromHandle(_mbApiInterface.MB_GetWindowHandle());
+            _frmLyrics?.Invoke(new Action(() =>
             {
                 _frmLyrics?.Dispose();
                 _frmLyrics = null;
             }));
+            SaveSettings(_settings);
         }
         
         public void Uninstall()
@@ -113,7 +114,7 @@ namespace MusicBeePlugin
             switch (type)
             {
                 case NotificationType.PluginStartup:
-                    // while (!Debugger.IsAttached) Thread.Sleep(1);
+                    while (!Debugger.IsAttached) System.Threading.Thread.Sleep(1);
                     try
                     {
                         try
@@ -195,7 +196,7 @@ namespace MusicBeePlugin
             var f = (Form)Control.FromHandle(_mbApiInterface.MB_GetWindowHandle());
             f.Invoke(new Action(() =>
             {
-                _frmLyrics = new FrmLyrics(_settings, SettingsPath2);
+                _frmLyrics = new FrmLyrics(_settings);
                 _frmLyrics.Show();
             }));
         }
