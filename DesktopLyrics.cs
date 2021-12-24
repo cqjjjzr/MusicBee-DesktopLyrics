@@ -114,7 +114,7 @@ namespace MusicBeePlugin
             switch (type)
             {
                 case NotificationType.PluginStartup:
-                    while (!Debugger.IsAttached) System.Threading.Thread.Sleep(1);
+                    // while (!Debugger.IsAttached) System.Threading.Thread.Sleep(1);
                     try
                     {
                         try

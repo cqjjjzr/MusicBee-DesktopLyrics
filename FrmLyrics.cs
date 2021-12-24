@@ -41,6 +41,11 @@ namespace MusicBeePlugin
                 _settings.PosX = Left;
                 _settings.PosY = Top;
             };
+            FormClosing += (o, args) =>
+            {
+                if (args.CloseReason == CloseReason.UserClosing)
+                    args.Cancel = true;
+            };
         }
         
         public void UpdateFromSettings(SettingsObj settings)
