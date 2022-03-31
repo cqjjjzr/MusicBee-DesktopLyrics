@@ -29,7 +29,7 @@ namespace MusicBeePlugin
         private volatile FrmLyrics _frmLyrics;
         private Timer _timer;
         private LyricsController _lyricsCtrl;
-        
+        private object _lock = new object();
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -153,6 +153,26 @@ namespace MusicBeePlugin
                 case NotificationType.PlayStateChanged:
                     UpdatePlayState(_mbApiInterface.Player_GetPlayState());
                     break;
+                case NotificationType.NowPlayingLyricsReady:
+                    try
+                    {
+                        UpdateLyrics();
+                    }
+                    catch (Exception e)
+                    {
+                        _mbApiInterface.MB_Trace(e.ToString());
+                    }
+                    break;
+                case NotificationType.TagsChanged:
+                    try
+                    {
+                        UpdateLyrics();
+                    }
+                    catch (Exception e)
+                    {
+                        _mbApiInterface.MB_Trace(e.ToString());
+                    }
+                    break;
             }
         }
 
@@ -218,20 +238,23 @@ namespace MusicBeePlugin
         private string _line1, _line2;
         private void UpdateLyrics()
         {
-            if (_frmLyrics == null) return;
-            var entry = _lyricsCtrl.UpdateLyrics();
-            if (entry == null && _line1 != "")
+            lock (_lock)
             {
-                _line1 = "";
-                _frmLyrics.Clear();
-                return;
-            }
+                if (_frmLyrics == null) return;
+                var entry = _lyricsCtrl.UpdateLyrics();
+                if (entry == null && _line1 != "")
+                {
+                    _line1 = "";
+                    _frmLyrics.Clear();
+                    return;
+                }
 
-            if (entry == null) return;
-            if (entry.LyricLine1 == _line1 && entry.LyricLine2 == _line2) return;
-            _frmLyrics.BeginInvoke(new Action<string, string>((line1, line2) => _frmLyrics.UpdateLyrics(line1, line2)), entry.LyricLine1, entry.LyricLine2);
-            _line1 = entry.LyricLine1;
-            _line2 = entry.LyricLine2;
+                if (entry == null) return;
+                if (entry.LyricLine1 == _line1 && entry.LyricLine2 == _line2) return;
+                _frmLyrics.BeginInvoke(new Action<string, string>((line1, line2) => _frmLyrics.UpdateLyrics(line1, line2)), entry.LyricLine1, entry.LyricLine2);
+                _line1 = entry.LyricLine1;
+                _line2 = entry.LyricLine2;
+            }
         }
 
         public string[] GetProviders() { return null; }

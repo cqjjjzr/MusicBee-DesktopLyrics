@@ -12,12 +12,23 @@
 
         public LyricParser.LyricEntry UpdateLyrics()
         {
-            var lyrics = _interface.NowPlaying_GetLyrics();
-            if (lyrics != _lastLyrics)
+            // TODO passively change?
+            var hasLyrics = _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.HasLyrics);
+            if (hasLyrics.StartsWith("Y")  || hasLyrics.Length == 0)
             {
-                _lyrics = LyricParser.ParseLyric(lyrics);
-                _lastLyrics = lyrics;
+                var lyrics = _interface.NowPlaying_GetLyrics();
+                if (lyrics != _lastLyrics)
+                {
+                    _lyrics = LyricParser.ParseLyric(lyrics);
+                    _lastLyrics = lyrics;
+                }
             }
+            else
+            {
+                _lyrics = null;
+                _lastLyrics = null;
+            }
+            
 
             if (_lyrics == null)
                 return new LyricParser.LyricEntry(0.0,
