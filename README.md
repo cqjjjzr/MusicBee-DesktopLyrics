@@ -11,7 +11,7 @@ It can work with NeteaseLyrics plugin [https://github.com/cqjjjzr/MusicBee-Netea
 # Download & Installation
 To use this plugin, download it from "Release" page of this GitHub repo or from links below:  
 For users who are in China:  
-[https://pan.baidu.com/s/1OQ2_GoNHe0n94YBwe77AFw](https://pan.baidu.com/s/1OQ2_GoNHe0n94YBwe77AFw "Baidu Netdisk Download")  
+[https://pan.baidu.com/s/1UrPo_NF8H3dNwQyNpNEZbg?pwd=1sr3](https://pan.baidu.com/s/1UrPo_NF8H3dNwQyNpNEZbg?pwd=1sr3 "Baidu Netdisk Download"), passcode `1sr3`  
 For users who aren't in China:  
 [https://1drv.ms/f/s!AicHZ6DLvCtX7B5M4CRdcJfCULCe](https://1drv.ms/f/s!AicHZ6DLvCtX7B5M4CRdcJfCULCe "OneDrive Download")  
 
@@ -36,7 +36,7 @@ MusicBee 中歌曲关联的歌词必须为 LRC 格式的同步歌词。支持 `o
 ## 下载 & 安装
 要用此插件请从本 GitHub repo 的 “Release” 页面或下列链接下载：  
 国内：
-[https://pan.baidu.com/s/1OQ2_GoNHe0n94YBwe77AFw](https://pan.baidu.com/s/1OQ2_GoNHe0n94YBwe77AFw "Baidu Netdisk Download")  
+[https://pan.baidu.com/s/1UrPo_NF8H3dNwQyNpNEZbg?pwd=1sr3](https://pan.baidu.com/s/1UrPo_NF8H3dNwQyNpNEZbg?pwd=1sr3 "Baidu Netdisk Download"), 提取码 `1sr3`  
 国外：  
 [https://1drv.ms/f/s!AicHZ6DLvCtX7B5M4CRdcJfCULCe](https://1drv.ms/f/s!AicHZ6DLvCtX7B5M4CRdcJfCULCe "OneDrive Download")  
 
