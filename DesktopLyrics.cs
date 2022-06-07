@@ -95,7 +95,7 @@ namespace MusicBeePlugin
             var ctrl = Control.FromHandle(_mbApiInterface.MB_GetWindowHandle());
             _frmLyrics?.Invoke(new Action(() =>
             {
-                _frmLyrics?.Dispose();
+                _frmLyrics?.Hide();
                 _frmLyrics = null;
             }));
             SaveSettings(_settings);
