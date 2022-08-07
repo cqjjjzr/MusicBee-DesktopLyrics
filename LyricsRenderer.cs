@@ -54,16 +54,17 @@ namespace MusicBeePlugin
 
         public static Bitmap Render2LineLyrics(string line1, string line2, IDeviceContext dc)
         {
-            var line1Bitmap = RenderLyrics(line1, _mainFont, dc);
-            var line2Bitmap = RenderLyrics(line2, _subFont, dc);
-            var bitmap = new Bitmap(Math.Max(line1Bitmap.Width, line2Bitmap.Width), line1Bitmap.Height + line2Bitmap.Height);
-            var g = Graphics.FromImage(bitmap);
-            g.DrawImage(line1Bitmap, new PointF(0, 0));
-            g.DrawImage(line2Bitmap, new PointF(0, line1Bitmap.Height * 0.9f));
-            g.Dispose();
-            line1Bitmap.Dispose();
-            line2Bitmap.Dispose();
-            return bitmap;
+            using (Bitmap line1Bitmap = RenderLyrics(line1, _mainFont, dc),
+                   line2Bitmap = RenderLyrics(line2, _subFont, dc))
+            {
+                var bitmap = new Bitmap(Math.Max(line1Bitmap.Width, line2Bitmap.Width), line1Bitmap.Height + line2Bitmap.Height);
+                using (var g = Graphics.FromImage(bitmap))
+                {
+                    g.DrawImage(line1Bitmap, new PointF(0, 0));
+                    g.DrawImage(line2Bitmap, new PointF(0, line1Bitmap.Height * 0.9f));
+                }
+                return bitmap;
+            }
         }
 
         public static Bitmap RenderLyrics(string lyric, Font font, IDeviceContext dc)
@@ -76,35 +77,43 @@ namespace MusicBeePlugin
             if (height <= 0) height = 1;
             var bitmap = new Bitmap(_width, height);
             bitmap.SetResolution(_dpi, _dpi);
-            var g = Graphics.FromImage(bitmap);
-            g.InterpolationMode = InterpolationMode.High;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-            g.CompositingQuality = CompositingQuality.HighQuality;
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.InterpolationMode = InterpolationMode.High;
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
-            float fontEmSize = font.SizeInPoints * _dpi / 72;
+                var fontEmSize = font.SizeInPoints * _dpi / 72;
 
-            var initialRect = new RectangleF(0, 0, _width, height);
-            var stringPath = new GraphicsPath(FillMode.Alternate);
-            stringPath.AddString(lyric, font.FontFamily, (int)font.Style, fontEmSize, initialRect, Format);
+                var initialRect = new RectangleF(0, 0, _width, height);
+                using (var stringPath = new GraphicsPath(FillMode.Alternate))
+                {
+                    stringPath.AddString(lyric, font.FontFamily, (int)font.Style, fontEmSize, initialRect, Format);
 
-            var mat = new Matrix();
-            mat.Translate(-ShadowOffset, -ShadowOffset);
-            stringPath.Transform(mat);
+                    // Using matrix to translate the path
+                    using (var mat = new Matrix())
+                    {
+                        mat.Translate(-ShadowOffset, -ShadowOffset);
+                        stringPath.Transform(mat);
 
-            g.FillPath(ShadowBrush, stringPath);
+                        g.FillPath(ShadowBrush, stringPath);
 
-            mat.Translate(ShadowOffset * 2, ShadowOffset * 2);
-            stringPath.Transform(mat);
+                        mat.Translate(ShadowOffset * 2, ShadowOffset * 2);
+                        stringPath.Transform(mat);
+                    }
 
-            if (_borderPen != null)
-                g.DrawPath(_borderPen, stringPath);
-            var stringBrush = CreateGradientBrush(initialRect);
-            g.FillPath(stringBrush, stringPath);
-            //g.DrawString(lyric, _mainFont, stringBrush, dstRect);
-            g.Dispose();
-            stringBrush.Dispose();
-            stringPath.Dispose();
+
+                    if (_borderPen != null)
+                        g.DrawPath(_borderPen, stringPath);
+
+                    using (var stringBrush = CreateGradientBrush(initialRect))
+                    {
+                        g.FillPath(stringBrush, stringPath);
+                    }
+                }
+            }
+            
             return bitmap;
         }
 

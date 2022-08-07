@@ -105,7 +105,6 @@ namespace MusicBeePlugin
                     if (Height != bitmap.Height) Height = bitmap.Height;
 
                     GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
-                    bitmap.Dispose();
                 }
             }
         }
@@ -125,7 +124,6 @@ namespace MusicBeePlugin
                     if (Height != bitmap.Height) Height = bitmap.Height;
 
                     GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
-                    bitmap.Dispose();
                 }
             }
         }
