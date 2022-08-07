@@ -11,7 +11,7 @@ namespace MusicBeePlugin
     {
         private static readonly Regex LyricWordRegex = new Regex(@".*\](.*)", RegexOptions.Compiled);
         private static readonly Regex LyricTimeRegex = new Regex(@"\[([0-9.:]*)\]+(.*)", RegexOptions.Compiled);
-        private static readonly Regex LyricTimeSingleRegex = new Regex(@"(\d+):(\d+)\.(\d+)", RegexOptions.Compiled);
+        private static readonly Regex LyricTimeSingleRegex = new Regex(@"(\d+):(\d+)(\.(\d+))?", RegexOptions.Compiled);
 
         public static bool PreserveSlash { get; set; } = false;
 
@@ -57,12 +57,16 @@ namespace MusicBeePlugin
                         if (!int.TryParse(singleMatch.Groups[2].Value, NumberStyles.Any, null, out var secs))
                             continue;
 
-                        var fsecString = singleMatch.Groups[3].Value;
-                        if (!int.TryParse(fsecString, NumberStyles.Any, null, out var fsrc))
-                            continue;
+                        var msec = 0;
+                        if (singleMatch.Groups.Count > 4)
+                        {
+                            var fsecString = singleMatch.Groups[3].Value;
+                            if (int.TryParse(fsecString, NumberStyles.Any, null, out msec))
+                                msec *= fsecString.Length == 3 ? 1 : 10;
+                        }
 
                         // Netease uses .MMM that provides milliseconds instead of 1/100s second
-                        var time = mins * 60 * 1000 + secs * 1000 + fsrc * (fsecString.Length == 3 ? 1 : 10);
+                        var time = mins * 60 * 1000 + secs * 1000 + msec;
                         rawLyrics.Add(new RawLyricEntry(time, word));
                     }
                 }
