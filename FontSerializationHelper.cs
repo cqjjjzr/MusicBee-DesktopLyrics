@@ -21,7 +21,7 @@ namespace MusicBeePlugin
             var fs = (m.Groups[3].Value.Contains("B") ? FontStyle.Bold : FontStyle.Regular)
                            | (m.Groups[3].Value.Contains("I") ? FontStyle.Italic : FontStyle.Regular)
                            | (m.Groups[3].Value.Contains("U") ? FontStyle.Underline : FontStyle.Regular);
-            return new Font(m.Groups["Font"].Value, float.Parse(m.Groups["Size"].Value), fs);
+            return new Font(m.Groups["Font"].Value, float.Parse(m.Groups["Size"].Value), fs, GraphicsUnit.Point);
         }
 
         public static string Serialize(Font value)

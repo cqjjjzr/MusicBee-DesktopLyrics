@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Unmanaged;
@@ -17,7 +18,9 @@ namespace MusicBeePlugin
         
         private void FrmLyrics_Load(object sender, EventArgs e)
         {
+            // TODO: multi-screen support
             var scrBounds = Screen.PrimaryScreen.Bounds;
+            LyricsRenderer.SetDpi(DeviceDpi);
             Width = scrBounds.Width;
             Height = 150;
             if (_settings.PosY < 0)
@@ -89,23 +92,42 @@ namespace MusicBeePlugin
 
         public void DrawLyrics1Line(string lyrics)
         {
-            var bitmap = LyricsRenderer.Render1LineLyrics(lyrics);
-            if (Width != bitmap.Width) Width = bitmap.Width;
-            if (Height != bitmap.Height) Height = bitmap.Height;
+            using (var g = CreateGraphics())
+            {
+                var bitmap = LyricsRenderer.Render1LineLyrics(lyrics, g);
 
-            GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
-            bitmap.Dispose();
+                if (bitmap == null)
+                    return;
+
+                using (bitmap)
+                {
+                    if (Width != bitmap.Width) Width = bitmap.Width;
+                    if (Height != bitmap.Height) Height = bitmap.Height;
+
+                    GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
+                    bitmap.Dispose();
+                }
+            }
         }
 
         public void DrawLyrics2Line(string line1, string line2)
         {
-            var bitmap = LyricsRenderer.Render2LineLyrics(line1, line2);
-            if (Width != bitmap.Width) Width = bitmap.Width;
-            if (Height != bitmap.Height) Height = bitmap.Height;
+            using (var g = CreateGraphics())
+            {
+                var bitmap = LyricsRenderer.Render2LineLyrics(line1, line2, g);
 
-            GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
+                if (bitmap == null)
+                    return;
 
-            bitmap.Dispose();
+                using (bitmap)
+                {
+                    if (Width != bitmap.Width) Width = bitmap.Width;
+                    if (Height != bitmap.Height) Height = bitmap.Height;
+
+                    GdiplusHelper.SetBitmap(bitmap, 255, Handle, Left, Top, Width, Height);
+                    bitmap.Dispose();
+                }
+            }
         }
 
         private void FrmLyrics_MouseDown(object sender, MouseEventArgs e)

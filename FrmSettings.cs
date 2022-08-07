@@ -49,7 +49,11 @@ namespace MusicBeePlugin
             dlgFont.Font = _font;
             var res = dlgFont.ShowDialog();
             if (res == DialogResult.OK || res == DialogResult.Yes)
-                _font = dlgFont.Font;
+            {
+                var font = dlgFont.Font;
+                // Force point unit
+                _font = new Font(font.FontFamily, font.Size, font.Style, GraphicsUnit.Point, font.GdiCharSet);
+            }
         }
 
         private void btnColors_Click(object sender, EventArgs e)
