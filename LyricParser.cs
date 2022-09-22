@@ -10,7 +10,7 @@ namespace MusicBeePlugin
     public class LyricParser
     {
         private static readonly Regex LyricWordRegex = new Regex(@".*\](.*)", RegexOptions.Compiled);
-        private static readonly Regex LyricTimeRegex = new Regex(@"\[([0-9.:]*)\]+(.*)", RegexOptions.Compiled);
+        private static readonly Regex LyricTimeRegex = new Regex(@"\[([0-9.:]*)\]+(.*?)", RegexOptions.Compiled);
         private static readonly Regex LyricTimeSingleRegex = new Regex(@"(\d+):(\d+)(\.(\d+))?", RegexOptions.Compiled);
 
         public static bool PreserveSlash { get; set; } = false;
