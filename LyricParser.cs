@@ -73,29 +73,33 @@ namespace MusicBeePlugin
             }
 
             if (rawLyrics.Count <= 0) return null;
-            var entries = CollapseLyric(rawLyrics);
+            var (entries, hasTranslation) = FoldLyricTranslation(rawLyrics);
             return new Lyrics
             {
                 Entries = entries,
-                Offset = lyricOffset
+                Offset = lyricOffset,
+                HasTranslation = hasTranslation
             };
         }
 
-        private static List<LyricEntry> CollapseLyric(IEnumerable<RawLyricEntry> rawLyrics)
+        private static (List<LyricEntry>, bool) FoldLyricTranslation(IEnumerable<RawLyricEntry> rawLyrics)
         {
             var entries = new List<LyricEntry>();
+            bool hasTranslation = false;
+
             foreach (var rawLyricEntry in rawLyrics)
             {
                 if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
                     var segs = rawLyricEntry.LyricLine.Split(new[] {'/'}, 2);
                     entries.Add(new LyricEntry(rawLyricEntry.Time, segs[0], segs[1]));
+                    hasTranslation = true;
                 }
                 else
                     entries.Add(new LyricEntry(rawLyricEntry.Time, rawLyricEntry.LyricLine, null));
             }
             entries.Sort(new LyricEntry.LyricEntryComparer());
-            return entries;
+            return (entries, hasTranslation);
         }
 
         private static double ProcessOffset(string line)
@@ -147,8 +151,9 @@ namespace MusicBeePlugin
 
         public class Lyrics
         {
-            public List<LyricEntry> Entries;
+            public List<LyricEntry> Entries; // Sorted guaranteed
             public double Offset;
+            public bool HasTranslation;
         }
     }
 }

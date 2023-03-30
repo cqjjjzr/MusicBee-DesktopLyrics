@@ -2,6 +2,8 @@
 {
     public class LyricsController
     {
+        public bool NextLineWhenNoTranslation { get; set; }
+
         private readonly Plugin.MusicBeeApiInterface _interface;
         private string _lastLyrics;
         private LyricParser.Lyrics _lyrics;
@@ -10,7 +12,7 @@
             _interface = @interface;
         }
 
-        public LyricParser.LyricEntry UpdateLyrics()
+        public LyricView UpdateLyrics()
         {
             // TODO passively change?
             var hasLyrics = _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.HasLyrics);
@@ -31,22 +33,53 @@
             
 
             if (_lyrics == null)
-                return new LyricParser.LyricEntry(0.0,
+                return new LyricView(
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.TrackTitle) + " - " +
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.Artist), null);
             var time = _interface.Player_GetPosition();
             var nTime = time + _lyrics.Offset;
             var entries = _lyrics.Entries;
+
+            LyricParser.LyricEntry currentEntry = null;
+            LyricParser.LyricEntry nextEntry = null;
+
             for (var i = 0; i < entries.Count; i++)
             {
                 if (entries[i].TimeMs > nTime && i > 0)
                 {
-                    return entries[i - 1];
+                    currentEntry = entries[i - 1];
+                    nextEntry = entries[i];
+                    break;
                 }
             }
 
-            if (entries.Count <= 0) return null;
-            return entries[entries.Count - 1];
+            if (currentEntry == null)
+            {
+                if (entries.Count <= 0) return null;
+                else currentEntry = entries[entries.Count - 1];
+            }
+
+            if (_lyrics.HasTranslation || nextEntry == null || !NextLineWhenNoTranslation)
+                return new LyricView(currentEntry.LyricLine1, currentEntry.LyricLine2);
+            return new LyricView(currentEntry.LyricLine1, nextEntry.LyricLine1);
+        }
+
+        public class LyricView
+        { 
+            // C# version < 8.0, can't use nullable reference feature....
+            public string LyricLine1 { get; set; } // Nullable
+            public string LyricLine2 { get; set; } // Nullable
+
+            public LyricView(string lyricLine1, string lyricLine2)
+            {
+                LyricLine1 = lyricLine1;
+                LyricLine2 = lyricLine2;
+            }
+
+            public override string ToString()
+            {
+                return $"[LyricView: {LyricLine1}, {LyricLine2}]";
+            }
         }
     }
 }

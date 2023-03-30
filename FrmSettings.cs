@@ -37,6 +37,7 @@ namespace MusicBeePlugin
                 btnBorderColor.BackColor = _settings.BorderColor;
                 checkBoxPreserveSlash.Checked = _settings.PreserveSlash;
                 checkBoxAutoHide.Checked = _settings.AutoHide;
+                checkBoxNextLineWhenNoTranslation.Checked = _settings.NextLineWhenNoTranslation;
             }
             catch (Exception)
             {
@@ -87,6 +88,11 @@ namespace MusicBeePlugin
         }
 
         public SettingsObj Settings => _settings;
+
+        private void checkBoxNextLineWhenNoTranslation_CheckedChanged(object sender, EventArgs e)
+        {
+            _settings.NextLineWhenNoTranslation = checkBoxNextLineWhenNoTranslation.Checked;
+        }
     }
 
     public class SettingsObj
@@ -98,6 +104,7 @@ namespace MusicBeePlugin
         public int GradientType;
         public bool PreserveSlash = false;
         public bool AutoHide = false;
+        public bool NextLineWhenNoTranslation = false;
         public bool HideOnStartup = false;
         public int PosY = -1;
         public int PosX = -1;

@@ -72,6 +72,7 @@ namespace MusicBeePlugin
                 SaveSettings(_settings);
                 _frmLyrics?.UpdateFromSettings(_settings);
                 LyricParser.PreserveSlash = _settings.PreserveSlash;
+                _lyricsCtrl.NextLineWhenNoTranslation = _settings.NextLineWhenNoTranslation;
             };
             configPanel.Controls.Add(btnSettings);
 
