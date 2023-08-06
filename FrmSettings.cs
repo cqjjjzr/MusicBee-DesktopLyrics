@@ -38,6 +38,7 @@ namespace MusicBeePlugin
                 checkBoxPreserveSlash.Checked = _settings.PreserveSlash;
                 checkBoxAutoHide.Checked = _settings.AutoHide;
                 checkBoxNextLineWhenNoTranslation.Checked = _settings.NextLineWhenNoTranslation;
+                checkBoxHideWhenUnavailable.Checked = _settings.HideWhenUnavailable;
             }
             catch (Exception)
             {
@@ -75,6 +76,7 @@ namespace MusicBeePlugin
             _settings.GradientType = cbxGradientType.SelectedIndex;
             _settings.PreserveSlash = checkBoxPreserveSlash.Checked;
             _settings.AutoHide = checkBoxAutoHide.Checked;
+            _settings.HideWhenUnavailable = checkBoxHideWhenUnavailable.Checked;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -106,6 +108,7 @@ namespace MusicBeePlugin
         public bool AutoHide = false;
         public bool NextLineWhenNoTranslation = false;
         public bool HideOnStartup = false;
+        public bool HideWhenUnavailable = false;
         public int PosY = -1;
         public int PosX = -1;
 

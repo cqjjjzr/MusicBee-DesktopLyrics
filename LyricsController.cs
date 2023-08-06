@@ -12,7 +12,7 @@
             _interface = @interface;
         }
 
-        public LyricView UpdateLyrics()
+        public LyricView UpdateLyrics(bool useGeneratedWhenUnavailable)
         {
             // TODO passively change?
             var hasLyrics = _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.HasLyrics);
@@ -33,9 +33,14 @@
             
 
             if (_lyrics == null)
-                return new LyricView(
+            {
+                if (useGeneratedWhenUnavailable)
+                    return new LyricView(
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.TrackTitle) + " - " +
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.Artist), null);
+                return null;
+            }
+                
             var time = _interface.Player_GetPosition();
             var nTime = time + _lyrics.Offset;
             var entries = _lyrics.Entries;

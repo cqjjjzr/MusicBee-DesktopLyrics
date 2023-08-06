@@ -40,6 +40,7 @@
             this.checkBoxPreserveSlash = new System.Windows.Forms.CheckBox();
             this.checkBoxAutoHide = new System.Windows.Forms.CheckBox();
             this.checkBoxNextLineWhenNoTranslation = new System.Windows.Forms.CheckBox();
+            this.checkBoxHideWhenUnavailable = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnFont
@@ -181,11 +182,23 @@
             this.checkBoxNextLineWhenNoTranslation.UseVisualStyleBackColor = true;
             this.checkBoxNextLineWhenNoTranslation.CheckedChanged += new System.EventHandler(this.checkBoxNextLineWhenNoTranslation_CheckedChanged);
             // 
+            // checkBoxHideWhenUnavailable
+            // 
+            this.checkBoxHideWhenUnavailable.AutoSize = true;
+            this.checkBoxHideWhenUnavailable.Location = new System.Drawing.Point(19, 371);
+            this.checkBoxHideWhenUnavailable.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxHideWhenUnavailable.Name = "checkBoxHideWhenUnavailable";
+            this.checkBoxHideWhenUnavailable.Size = new System.Drawing.Size(421, 22);
+            this.checkBoxHideWhenUnavailable.TabIndex = 12;
+            this.checkBoxHideWhenUnavailable.Text = "Hide lyrics window when no lyrics available";
+            this.checkBoxHideWhenUnavailable.UseVisualStyleBackColor = true;
+            // 
             // FrmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(470, 376);
+            this.ClientSize = new System.Drawing.Size(470, 436);
+            this.Controls.Add(this.checkBoxHideWhenUnavailable);
             this.Controls.Add(this.checkBoxNextLineWhenNoTranslation);
             this.Controls.Add(this.checkBoxAutoHide);
             this.Controls.Add(this.checkBoxPreserveSlash);
@@ -221,5 +234,6 @@
         private System.Windows.Forms.CheckBox checkBoxPreserveSlash;
         private System.Windows.Forms.CheckBox checkBoxAutoHide;
         private System.Windows.Forms.CheckBox checkBoxNextLineWhenNoTranslation;
+        private System.Windows.Forms.CheckBox checkBoxHideWhenUnavailable;
     }
 }

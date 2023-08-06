@@ -242,7 +242,7 @@ namespace MusicBeePlugin
             lock (_lock)
             {
                 if (_frmLyrics == null) return;
-                var entry = _lyricsCtrl.UpdateLyrics();
+                var entry = _lyricsCtrl.UpdateLyrics(!_settings.HideWhenUnavailable);
                 if (entry == null && _line1 != "")
                 {
                     _line1 = "";
