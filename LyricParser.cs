@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -84,23 +85,41 @@ namespace MusicBeePlugin
 
         private static (List<LyricEntry>, bool) FoldLyricTranslation(IEnumerable<RawLyricEntry> rawLyrics)
         {
-            var entries = new List<LyricEntry>();
-            bool hasTranslation = false;
+
+            Hashtable tableLine1 = new Hashtable();
+            Hashtable tableLine2 = new Hashtable();
 
             foreach (var rawLyricEntry in rawLyrics)
             {
                 if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
-                    var segs = rawLyricEntry.LyricLine.Split(new[] {'/'}, 2);
-                    entries.Add(new LyricEntry(rawLyricEntry.Time, segs[0], segs[1]));
-                    hasTranslation = true;
+                    var segs = rawLyricEntry.LyricLine.Split(new[] { '/' }, 2);
+                    tableLine1.Add(rawLyricEntry.Time, segs[0]);
+                    tableLine1.Add(rawLyricEntry.Time, segs[1]);
                 }
+                else if (tableLine1.ContainsKey(rawLyricEntry.Time))
+                    tableLine2.Add(rawLyricEntry.Time, rawLyricEntry.LyricLine);
                 else
-                    entries.Add(new LyricEntry(rawLyricEntry.Time, rawLyricEntry.LyricLine, null));
+                    tableLine1.Add(rawLyricEntry.Time, rawLyricEntry.LyricLine);
             }
-            entries.Sort(new LyricEntry.LyricEntryComparer());
-            return (entries, hasTranslation);
+
+            var sortedTime = new ArrayList(tableLine1.Keys);
+            sortedTime.Sort();
+
+            var entries = new List<LyricEntry>();
+
+            foreach (double time in sortedTime)
+            {
+                String line = (string)tableLine1[time];
+                if (tableLine2.ContainsKey(time))
+                    entries.Add(new LyricEntry(time, line, (string)tableLine2[time]));
+                else
+                    entries.Add(new LyricEntry(time, line, null));
+            }
+
+            return (entries, tableLine2.Count > 0);
         }
+
 
         private static double ProcessOffset(string line)
         {
