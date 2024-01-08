@@ -85,9 +85,8 @@ namespace MusicBeePlugin
 
         private static (List<LyricEntry>, bool) FoldLyricTranslation(IEnumerable<RawLyricEntry> rawLyrics)
         {
-
-            Hashtable tableLine1 = new Hashtable();
-            Hashtable tableLine2 = new Hashtable();
+            var tableLine1 = new Dictionary<double, string>();
+            var tableLine2 = new Dictionary<double, string>();
 
             foreach (var rawLyricEntry in rawLyrics)
             {
@@ -95,7 +94,7 @@ namespace MusicBeePlugin
                 {
                     var segs = rawLyricEntry.LyricLine.Split(new[] { '/' }, 2);
                     tableLine1.Add(rawLyricEntry.Time, segs[0]);
-                    tableLine1.Add(rawLyricEntry.Time, segs[1]);
+                    tableLine2.Add(rawLyricEntry.Time, segs[1]);
                 }
                 else if (tableLine1.ContainsKey(rawLyricEntry.Time))
                     tableLine2.Add(rawLyricEntry.Time, rawLyricEntry.LyricLine);
@@ -107,16 +106,8 @@ namespace MusicBeePlugin
             sortedTime.Sort();
 
             var entries = new List<LyricEntry>();
-
             foreach (double time in sortedTime)
-            {
-                String line = (string)tableLine1[time];
-                if (tableLine2.ContainsKey(time))
-                    entries.Add(new LyricEntry(time, line, (string)tableLine2[time]));
-                else
-                    entries.Add(new LyricEntry(time, line, null));
-            }
-
+                entries.Add(new LyricEntry(time, tableLine1[time], (tableLine2.TryGetValue(time, out var line2) ? line2 : null)));
             return (entries, tableLine2.Count > 0);
         }
 
