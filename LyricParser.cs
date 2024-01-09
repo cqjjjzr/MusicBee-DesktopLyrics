@@ -61,7 +61,7 @@ namespace MusicBeePlugin
                         var msec = 0;
                         if (singleMatch.Groups.Count > 4)
                         {
-                            var fsecString = singleMatch.Groups[3].Value;
+                            var fsecString = singleMatch.Groups[4].Value;
                             if (int.TryParse(fsecString, NumberStyles.Any, null, out msec))
                                 msec *= fsecString.Length == 3 ? 1 : 10;
                         }
@@ -90,7 +90,9 @@ namespace MusicBeePlugin
 
             foreach (var rawLyricEntry in rawLyrics)
             {
-                if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
+                if (tableLine2.ContainsKey(rawLyricEntry.Time))
+                    continue;
+                else if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
                     var segs = rawLyricEntry.LyricLine.Split(new[] { '/' }, 2);
                     tableLine1.Add(rawLyricEntry.Time, segs[0]);
