@@ -31,6 +31,7 @@ namespace MusicBeePlugin
             }
             try
             {
+                btnFont.Text = _font.Name + " "+ _font.Size;
                 cbxGradientType.SelectedIndex = _settings.GradientType;
                 btnColor1.BackColor = _settings.Color1;
                 btnColor2.BackColor = _settings.Color2;
@@ -55,6 +56,7 @@ namespace MusicBeePlugin
                 var font = dlgFont.Font;
                 // Force point unit
                 _font = new Font(font.FontFamily, font.Size, font.Style, GraphicsUnit.Point, font.GdiCharSet);
+                btnFont.Text = _font.Name + " " + _font.Size;
             }
         }
 

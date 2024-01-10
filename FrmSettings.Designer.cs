@@ -41,16 +41,17 @@
             this.checkBoxAutoHide = new System.Windows.Forms.CheckBox();
             this.checkBoxNextLineWhenNoTranslation = new System.Windows.Forms.CheckBox();
             this.checkBoxHideWhenUnavailable = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnFont
             // 
             this.btnFont.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFont.Location = new System.Drawing.Point(19, 18);
-            this.btnFont.Margin = new System.Windows.Forms.Padding(5);
+            this.btnFont.Location = new System.Drawing.Point(132, 15);
+            this.btnFont.Margin = new System.Windows.Forms.Padding(4);
             this.btnFont.Name = "btnFont";
-            this.btnFont.Size = new System.Drawing.Size(432, 35);
+            this.btnFont.Size = new System.Drawing.Size(242, 29);
             this.btnFont.TabIndex = 0;
             this.btnFont.Text = "Font";
             this.btnFont.UseVisualStyleBackColor = true;
@@ -59,10 +60,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 82);
-            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label1.Location = new System.Drawing.Point(13, 60);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(107, 18);
+            this.label1.Size = new System.Drawing.Size(95, 15);
             this.label1.TabIndex = 1;
             this.label1.Text = "Text color:";
             // 
@@ -71,10 +72,10 @@
             this.btnColor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColor1.BackColor = System.Drawing.Color.LightCyan;
-            this.btnColor1.Location = new System.Drawing.Point(140, 73);
-            this.btnColor1.Margin = new System.Windows.Forms.Padding(5);
+            this.btnColor1.Location = new System.Drawing.Point(132, 53);
+            this.btnColor1.Margin = new System.Windows.Forms.Padding(4);
             this.btnColor1.Name = "btnColor1";
-            this.btnColor1.Size = new System.Drawing.Size(311, 35);
+            this.btnColor1.Size = new System.Drawing.Size(242, 29);
             this.btnColor1.TabIndex = 2;
             this.btnColor1.UseVisualStyleBackColor = false;
             this.btnColor1.Click += new System.EventHandler(this.btnColors_Click);
@@ -84,10 +85,10 @@
             this.btnColor2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColor2.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnColor2.Location = new System.Drawing.Point(140, 118);
-            this.btnColor2.Margin = new System.Windows.Forms.Padding(5);
+            this.btnColor2.Location = new System.Drawing.Point(132, 91);
+            this.btnColor2.Margin = new System.Windows.Forms.Padding(4);
             this.btnColor2.Name = "btnColor2";
-            this.btnColor2.Size = new System.Drawing.Size(311, 35);
+            this.btnColor2.Size = new System.Drawing.Size(242, 29);
             this.btnColor2.TabIndex = 4;
             this.btnColor2.UseVisualStyleBackColor = false;
             this.btnColor2.Click += new System.EventHandler(this.btnColors_Click);
@@ -98,10 +99,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBorderColor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnBorderColor.BackColor = System.Drawing.Color.Gray;
-            this.btnBorderColor.Location = new System.Drawing.Point(158, 161);
-            this.btnBorderColor.Margin = new System.Windows.Forms.Padding(5);
+            this.btnBorderColor.Location = new System.Drawing.Point(132, 129);
+            this.btnBorderColor.Margin = new System.Windows.Forms.Padding(4);
             this.btnBorderColor.Name = "btnBorderColor";
-            this.btnBorderColor.Size = new System.Drawing.Size(293, 35);
+            this.btnBorderColor.Size = new System.Drawing.Size(242, 29);
             this.btnBorderColor.TabIndex = 6;
             this.btnBorderColor.UseVisualStyleBackColor = false;
             this.btnBorderColor.Click += new System.EventHandler(this.btnColors_Click);
@@ -109,20 +110,20 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 168);
-            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label3.Location = new System.Drawing.Point(13, 136);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 18);
+            this.label3.Size = new System.Drawing.Size(111, 15);
             this.label3.TabIndex = 5;
             this.label3.Text = "Border color:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 209);
-            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label2.Location = new System.Drawing.Point(13, 170);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(134, 18);
+            this.label2.Size = new System.Drawing.Size(119, 15);
             this.label2.TabIndex = 7;
             this.label2.Text = "Gradient Type:";
             // 
@@ -136,19 +137,18 @@
             "No Gradient",
             "Double Color Gradient",
             "Triple Color Gradient"});
-            this.cbxGradientType.Location = new System.Drawing.Point(158, 204);
-            this.cbxGradientType.Margin = new System.Windows.Forms.Padding(5);
+            this.cbxGradientType.Location = new System.Drawing.Point(132, 167);
+            this.cbxGradientType.Margin = new System.Windows.Forms.Padding(4);
             this.cbxGradientType.Name = "cbxGradientType";
-            this.cbxGradientType.Size = new System.Drawing.Size(291, 26);
+            this.cbxGradientType.Size = new System.Drawing.Size(242, 23);
             this.cbxGradientType.TabIndex = 8;
             // 
             // checkBoxPreserveSlash
             // 
             this.checkBoxPreserveSlash.AutoSize = true;
-            this.checkBoxPreserveSlash.Location = new System.Drawing.Point(19, 245);
-            this.checkBoxPreserveSlash.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxPreserveSlash.Location = new System.Drawing.Point(16, 204);
             this.checkBoxPreserveSlash.Name = "checkBoxPreserveSlash";
-            this.checkBoxPreserveSlash.Size = new System.Drawing.Size(169, 22);
+            this.checkBoxPreserveSlash.Size = new System.Drawing.Size(149, 19);
             this.checkBoxPreserveSlash.TabIndex = 9;
             this.checkBoxPreserveSlash.Text = "Leave \'/\' as-is";
             this.checkBoxPreserveSlash.UseVisualStyleBackColor = true;
@@ -159,10 +159,9 @@
             this.checkBoxAutoHide.AutoSize = true;
             this.checkBoxAutoHide.Checked = true;
             this.checkBoxAutoHide.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxAutoHide.Location = new System.Drawing.Point(19, 277);
-            this.checkBoxAutoHide.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxAutoHide.Location = new System.Drawing.Point(16, 231);
             this.checkBoxAutoHide.Name = "checkBoxAutoHide";
-            this.checkBoxAutoHide.Size = new System.Drawing.Size(250, 22);
+            this.checkBoxAutoHide.Size = new System.Drawing.Size(221, 19);
             this.checkBoxAutoHide.TabIndex = 10;
             this.checkBoxAutoHide.Text = "Hide lyrics when stopped";
             this.checkBoxAutoHide.UseVisualStyleBackColor = true;
@@ -172,10 +171,9 @@
             // 
             this.checkBoxNextLineWhenNoTranslation.Checked = true;
             this.checkBoxNextLineWhenNoTranslation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxNextLineWhenNoTranslation.Location = new System.Drawing.Point(19, 307);
-            this.checkBoxNextLineWhenNoTranslation.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxNextLineWhenNoTranslation.Location = new System.Drawing.Point(16, 256);
             this.checkBoxNextLineWhenNoTranslation.Name = "checkBoxNextLineWhenNoTranslation";
-            this.checkBoxNextLineWhenNoTranslation.Size = new System.Drawing.Size(430, 56);
+            this.checkBoxNextLineWhenNoTranslation.Size = new System.Drawing.Size(358, 47);
             this.checkBoxNextLineWhenNoTranslation.TabIndex = 11;
             this.checkBoxNextLineWhenNoTranslation.Text = "Display the next lyric line on the second line when the lyrics have no translatio" +
     "n\r\n";
@@ -185,19 +183,29 @@
             // checkBoxHideWhenUnavailable
             // 
             this.checkBoxHideWhenUnavailable.AutoSize = true;
-            this.checkBoxHideWhenUnavailable.Location = new System.Drawing.Point(19, 371);
-            this.checkBoxHideWhenUnavailable.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxHideWhenUnavailable.Location = new System.Drawing.Point(16, 309);
             this.checkBoxHideWhenUnavailable.Name = "checkBoxHideWhenUnavailable";
-            this.checkBoxHideWhenUnavailable.Size = new System.Drawing.Size(421, 22);
+            this.checkBoxHideWhenUnavailable.Size = new System.Drawing.Size(373, 19);
             this.checkBoxHideWhenUnavailable.TabIndex = 12;
             this.checkBoxHideWhenUnavailable.Text = "Hide lyrics window when no lyrics available";
             this.checkBoxHideWhenUnavailable.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 22);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 15);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Text font:";
+            // 
             // FrmSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(470, 436);
+            this.ClientSize = new System.Drawing.Size(392, 363);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBoxHideWhenUnavailable);
             this.Controls.Add(this.checkBoxNextLineWhenNoTranslation);
             this.Controls.Add(this.checkBoxAutoHide);
@@ -210,7 +218,7 @@
             this.Controls.Add(this.btnColor1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnFont);
-            this.Margin = new System.Windows.Forms.Padding(5);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmSettings";
             this.Text = "Desktop Lyrics Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Settings_FormClosed);
@@ -235,5 +243,6 @@
         private System.Windows.Forms.CheckBox checkBoxAutoHide;
         private System.Windows.Forms.CheckBox checkBoxNextLineWhenNoTranslation;
         private System.Windows.Forms.CheckBox checkBoxHideWhenUnavailable;
+        private System.Windows.Forms.Label label4;
     }
 }
