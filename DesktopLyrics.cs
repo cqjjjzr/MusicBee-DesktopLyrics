@@ -49,7 +49,7 @@ namespace MusicBeePlugin
             _about.MinInterfaceVersion = MinInterfaceVersion;
             _about.MinApiRevision = MinApiRevision;
             _about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
-            _about.ConfigurationPanelHeight = 32;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+            _about.ConfigurationPanelHeight = 0;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
 
             _lyricsCtrl = new LyricsController(_mbApiInterface);
             return _about;
@@ -57,26 +57,13 @@ namespace MusicBeePlugin
 
         public bool Configure(IntPtr panelHandle)
         {
-            if (panelHandle == IntPtr.Zero) return false;
-            var configPanel = (Panel) Control.FromHandle(panelHandle);
-            var btnSettings = new Button
-            {
-                Location = new Point(0, 0),
-                Size = new Size(150, 30),
-                Text = @"Settings"
-            };
-            btnSettings.Click += (sender, args) =>
-            {
-                var settingsForm = new FrmSettings(_settings);
-                settingsForm.ShowDialog();
-                SaveSettings(_settings);
-                _frmLyrics?.UpdateFromSettings(_settings);
-                LyricParser.PreserveSlash = _settings.PreserveSlash;
-                _lyricsCtrl.NextLineWhenNoTranslation = _settings.NextLineWhenNoTranslation;
-            };
-            configPanel.Controls.Add(btnSettings);
-
-            return false;
+            var settingsForm = new FrmSettings(_settings);
+            settingsForm.ShowDialog();
+            SaveSettings(_settings);
+            _frmLyrics?.UpdateFromSettings(_settings);
+            LyricParser.PreserveSlash = _settings.PreserveSlash;
+            _lyricsCtrl.NextLineWhenNoTranslation = _settings.NextLineWhenNoTranslation;
+            return true;
         }
 
         private void SaveSettings(SettingsObj settings)

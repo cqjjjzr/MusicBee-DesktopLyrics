@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -60,7 +61,7 @@ namespace MusicBeePlugin
                         var msec = 0;
                         if (singleMatch.Groups.Count > 4)
                         {
-                            var fsecString = singleMatch.Groups[3].Value;
+                            var fsecString = singleMatch.Groups[4].Value;
                             if (int.TryParse(fsecString, NumberStyles.Any, null, out msec))
                                 msec *= fsecString.Length == 3 ? 1 : 10;
                         }
@@ -84,23 +85,34 @@ namespace MusicBeePlugin
 
         private static (List<LyricEntry>, bool) FoldLyricTranslation(IEnumerable<RawLyricEntry> rawLyrics)
         {
-            var entries = new List<LyricEntry>();
-            bool hasTranslation = false;
+            var tableLine1 = new Dictionary<double, string>();
+            var tableLine2 = new Dictionary<double, string>();
 
             foreach (var rawLyricEntry in rawLyrics)
             {
-                if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
+                if (tableLine2.ContainsKey(rawLyricEntry.Time))
+                    continue;
+                else if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
-                    var segs = rawLyricEntry.LyricLine.Split(new[] {'/'}, 2);
-                    entries.Add(new LyricEntry(rawLyricEntry.Time, segs[0], segs[1]));
-                    hasTranslation = true;
+                    var segs = rawLyricEntry.LyricLine.Split(new[] { '/' }, 2);
+                    tableLine1.Add(rawLyricEntry.Time, segs[0]);
+                    tableLine2.Add(rawLyricEntry.Time, segs[1]);
                 }
+                else if (tableLine1.ContainsKey(rawLyricEntry.Time))
+                    tableLine2.Add(rawLyricEntry.Time, rawLyricEntry.LyricLine);
                 else
-                    entries.Add(new LyricEntry(rawLyricEntry.Time, rawLyricEntry.LyricLine, null));
+                    tableLine1.Add(rawLyricEntry.Time, rawLyricEntry.LyricLine);
             }
-            entries.Sort(new LyricEntry.LyricEntryComparer());
-            return (entries, hasTranslation);
+
+            var sortedTime = new ArrayList(tableLine1.Keys);
+            sortedTime.Sort();
+
+            var entries = new List<LyricEntry>();
+            foreach (double time in sortedTime)
+                entries.Add(new LyricEntry(time, tableLine1[time], (tableLine2.TryGetValue(time, out var line2) ? line2 : null)));
+            return (entries, tableLine2.Count > 0);
         }
+
 
         private static double ProcessOffset(string line)
         {
