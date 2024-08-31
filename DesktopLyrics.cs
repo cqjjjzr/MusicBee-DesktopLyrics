@@ -144,7 +144,7 @@ namespace MusicBeePlugin
                 case NotificationType.NowPlayingLyricsReady:
                     try
                     {
-                        UpdateLyrics();
+                        UpdateLyrics(force: true);
                     }
                     catch (Exception e)
                     {
@@ -154,7 +154,7 @@ namespace MusicBeePlugin
                 case NotificationType.TagsChanged:
                     try
                     {
-                        UpdateLyrics();
+                        UpdateLyrics(force: true);
                     }
                     catch (Exception e)
                     {
@@ -182,20 +182,28 @@ namespace MusicBeePlugin
 
         private void StartupMenuItem()
         {
-            var menuItem = (ToolStripMenuItem) _mbApiInterface.MB_AddMenuItem("mnuView/Desktop Lyrics", "Toggle Desktop Lyrics visibility.",
-                (sender, args) =>
-                { });
-            menuItem.CheckOnClick = true;
-            menuItem.Checked = !_settings.HideOnStartup;
-            menuItem.CheckedChanged += (sender, args) =>
+            // MenuItem will only be returned before we construct the handler lambda expression, so we have to use a "slot"
+            // (which will be filled after MB_AddMenuItem returns) to hold the menuItem to be referred in the closure.
+            var menuItemSlot = new ToolStripMenuItem[] { null };
+            EventHandler handler = (sender, args) =>
             {
-                if (!menuItem.Checked)
+                var menuItem2 = menuItemSlot[0];
+                if (menuItem2 == null) return; // BUG: multithread race condition
+
+                menuItem2.Checked = !menuItem2.Checked;
+                if (!menuItem2.Checked)
                     _frmLyrics?.Dispose();
                 else
                     StartupForm();
-                _settings.HideOnStartup = !menuItem.Checked;
+                _settings.HideOnStartup = !menuItem2.Checked;
                 SaveSettings(_settings);
             };
+
+            var menuItem = (ToolStripMenuItem) _mbApiInterface.MB_AddMenuItem(
+                "mnuView/Desktop Lyrics", "Toggle Desktop Lyrics visibility.",
+                handler);
+            menuItemSlot[0] = menuItem;
+            menuItem.Checked = !_settings.HideOnStartup;
         }
 
         private void StartupForm()
@@ -206,6 +214,14 @@ namespace MusicBeePlugin
             {
                 _frmLyrics = new FrmLyrics(_settings);
                 _frmLyrics.Show();
+                try
+                {
+                    UpdateLyrics(force: true);
+                }
+                catch (Exception e)
+                {
+                    _mbApiInterface.MB_Trace(e.ToString());
+                }
             }));
         }
 
@@ -224,7 +240,7 @@ namespace MusicBeePlugin
         }
 
         private string _line1, _line2;
-        private void UpdateLyrics()
+        private void UpdateLyrics(bool force = false)
         {
             lock (_lock)
             {
@@ -238,7 +254,7 @@ namespace MusicBeePlugin
                 }
 
                 if (entry == null) return;
-                if (entry.LyricLine1 == _line1 && entry.LyricLine2 == _line2) return;
+                if (!force && entry.LyricLine1 == _line1 && entry.LyricLine2 == _line2) return;
                 _frmLyrics.BeginInvoke(new Action<string, string>((line1, line2) => _frmLyrics.UpdateLyrics(line1, line2)), entry.LyricLine1, entry.LyricLine2);
                 _line1 = entry.LyricLine1;
                 _line2 = entry.LyricLine2;
