@@ -7,6 +7,10 @@
         private readonly Plugin.MusicBeeApiInterface _interface;
         private string _lastLyrics;
         private LyricParser.Lyrics _lyrics;
+        private int _currentEntryIndex = -1;
+        private double _currentEntryStart;
+        private double _currentEntryEnd;
+
         public LyricsController(Plugin.MusicBeeApiInterface @interface)
         {
             _interface = @interface;
@@ -23,12 +27,14 @@
                 {
                     _lyrics = LyricParser.ParseLyric(lyrics);
                     _lastLyrics = lyrics;
+                    _currentEntryIndex = -1;
                 }
             }
             else
             {
                 _lyrics = null;
                 _lastLyrics = null;
+                _currentEntryIndex = -1;
             }
             
 
@@ -38,7 +44,7 @@
                     return new LyricView(
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.TrackTitle) + " - " +
                     _interface.NowPlaying_GetFileTag(Plugin.MetaDataType.Artist), null);
-                return null;
+                return emptyEntry;
             }
                 
             var time = _interface.Player_GetPosition();
@@ -48,20 +54,66 @@
             LyricParser.LyricEntry currentEntry = null;
             LyricParser.LyricEntry nextEntry = null;
 
-            for (var i = 0; i < entries.Count; i++)
+
+            if (_currentEntryIndex >= 0 && _currentEntryIndex < entries.Count && nTime >= _currentEntryStart)
             {
-                if (entries[i].TimeMs > nTime && i > 0)
+                if (nTime <= _currentEntryEnd)
                 {
-                    currentEntry = entries[i - 1];
-                    nextEntry = entries[i];
-                    break;
+                    currentEntry = entries[_currentEntryIndex];
+                    nextEntry = entries[_currentEntryIndex];
+                }
+                else
+                {
+                    for (var i = _currentEntryIndex + 2; i < entries.Count; i++)
+                    {
+                        if (entries[i].TimeMs > nTime)
+                        {
+                            currentEntry = entries[i - 1];
+                            nextEntry = entries[i];
+                            _currentEntryIndex = i;
+                            _currentEntryStart = currentEntry.TimeMs;
+                            _currentEntryEnd = nextEntry.TimeMs;
+
+                            break;
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                for (var i = 0; i < entries.Count; i++)
+                {
+                    if (entries[i].TimeMs > nTime)
+                    {
+                        if (i > 0)
+                        {
+                            currentEntry = entries[i - 1];
+                            nextEntry = entries[i];
+                            _currentEntryIndex = i;
+                            _currentEntryStart = currentEntry.TimeMs;
+                            _currentEntryEnd = nextEntry.TimeMs;
+                        }
+                        else
+                        {
+                            return emptyEntry;
+                        }
+
+                        break;
+                    }
                 }
             }
 
             if (currentEntry == null)
             {
-                if (entries.Count <= 0) return null;
-                else currentEntry = entries[entries.Count - 1];
+                if (entries.Count <= 0) return emptyEntry;
+                else
+                {
+                    currentEntry = entries[entries.Count - 1];
+                    _currentEntryIndex = entries.Count - 1;
+                    _currentEntryStart = currentEntry.TimeMs;
+                    _currentEntryEnd = double.MaxValue;
+                }
             }
 
             if (_lyrics.HasTranslation || nextEntry == null || !NextLineWhenNoTranslation)
@@ -86,5 +138,7 @@
                 return $"[LyricView: {LyricLine1}, {LyricLine2}]";
             }
         }
+
+        public static LyricView emptyEntry = new LyricView("", "");
     }
 }
