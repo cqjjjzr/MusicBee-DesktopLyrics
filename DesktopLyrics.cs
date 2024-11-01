@@ -117,14 +117,7 @@ namespace MusicBeePlugin
                         }
                         catch (Exception)
                         {
-                            _settings = new SettingsObj
-                            {
-                                BorderColor = Color.Black,
-                                Color1 = Color.GhostWhite,
-                                Color2 = Color.LightGray,
-                                FontActual = new Font(FontFamily.GenericSansSerif, 34.0f, FontStyle.Regular, GraphicsUnit.Point),
-                                GradientType = 1
-                            };
+                            _settings = SettingsObj.GenerateDefault();
                         }
 
                         Application.EnableVisualStyles();

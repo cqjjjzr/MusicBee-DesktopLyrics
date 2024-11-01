@@ -36,9 +36,22 @@ namespace MusicBeePlugin
                 EndCap = LineCap.Round,
                 StartCap = LineCap.Round
             };
-            _type = (GradientType) settings.GradientType;
+            _type = (GradientType)settings.GradientType;
             _color1 = settings.Color1;
             _color2 = settings.Color2;
+            switch ((AlignmentType)settings.AlignmentType)
+            {
+                case AlignmentType.Left:
+                    Format.Alignment = StringAlignment.Near;
+                    break;
+                case AlignmentType.Right:
+                    Format.Alignment = StringAlignment.Far;
+                    break;
+                case AlignmentType.Center:
+                default:
+                    Format.Alignment = StringAlignment.Center;
+                    break;
+            }
 
             _width = width;
         }
@@ -62,7 +75,7 @@ namespace MusicBeePlugin
                 using (var g = Graphics.FromImage(bitmap))
                 {
                     g.DrawImage(line1Bitmap, new PointF(0, 0));
-                    g.DrawImage(line2Bitmap, new PointF(0, line1Bitmap.Height * 0.9f));
+                    g.DrawImage(line2Bitmap, new PointF(0, line1Bitmap.Height * 0.9f)); // TODO: a better approach to reduce line space for a more compact view...
                 }
                 return bitmap;
             }

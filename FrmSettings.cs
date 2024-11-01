@@ -34,6 +34,7 @@ namespace MusicBeePlugin
             {
                 btnFont.Text = _font.Name + " "+ _font.Size;
                 comboBoxGradientType.SelectedIndex = _settings.GradientType;
+                comboBoxAlignment.SelectedIndex = _settings.AlignmentType;
                 btnColor1.BackColor = _settings.Color1;
                 btnColor2.BackColor = _settings.Color2;
                 btnBorderColor.BackColor = _settings.BorderColor;
@@ -68,19 +69,7 @@ namespace MusicBeePlugin
                 button.BackColor = _colorDialog.Color;
         }
 
-        private void Settings_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _settings.Font = FontSerializationHelper.Serialize(_font);
-            _settings.Color1 = btnColor1.BackColor;
-            _settings.Color2 = btnColor2.BackColor;
-            _settings.BorderColor = btnBorderColor.BackColor;
-            _settings.GradientType = comboBoxGradientType.SelectedIndex;
-            _settings.PreserveSlash = checkBoxPreserveSlash.Checked;
-            _settings.AutoHide = checkBoxAutoHide.Checked;
-            _settings.HideWhenUnavailable = checkBoxHideWhenUnavailable.Checked;
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxPreserveSlash_CheckedChanged(object sender, EventArgs e)
         {
             _settings.PreserveSlash = checkBoxPreserveSlash.Checked;
         }
@@ -90,11 +79,22 @@ namespace MusicBeePlugin
             _settings.AutoHide = checkBoxAutoHide.Checked;
         }
 
-        public SettingsObj Settings => _settings;
-
         private void checkBoxNextLineWhenNoTranslation_CheckedChanged(object sender, EventArgs e)
         {
             _settings.NextLineWhenNoTranslation = checkBoxNextLineWhenNoTranslation.Checked;
+        }
+
+        private void Settings_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _settings.Font = FontSerializationHelper.Serialize(_font);
+            _settings.Color1 = btnColor1.BackColor;
+            _settings.Color2 = btnColor2.BackColor;
+            _settings.BorderColor = btnBorderColor.BackColor;
+            _settings.GradientType = comboBoxGradientType.SelectedIndex;
+            _settings.AlignmentType = comboBoxAlignment.SelectedIndex;
+            _settings.PreserveSlash = checkBoxPreserveSlash.Checked;
+            _settings.AutoHide = checkBoxAutoHide.Checked;
+            _settings.HideWhenUnavailable = checkBoxHideWhenUnavailable.Checked;
         }
     }
 
@@ -105,6 +105,7 @@ namespace MusicBeePlugin
         public Color Color2;
         public Color BorderColor;
         public int GradientType;
+        public int AlignmentType;
         public bool PreserveSlash;
         public bool AutoHide;
         public bool NextLineWhenNoTranslation;
@@ -119,6 +120,19 @@ namespace MusicBeePlugin
             get => FontSerializationHelper.Deserialize(Font);
             set => Font = FontSerializationHelper.Serialize(value);
         }
+
+        public static SettingsObj GenerateDefault()
+        {
+            return new SettingsObj
+            {
+                BorderColor = Color.Black,
+                Color1 = Color.GhostWhite,
+                Color2 = Color.LightGray,
+                FontActual = new Font(FontFamily.GenericSansSerif, 34.0f, FontStyle.Regular, GraphicsUnit.Point),
+                GradientType = 1,
+                AlignmentType = 0,
+            };
+        }
     }
 
     // This corresponds to items of comboBoxGradientType!
@@ -127,5 +141,13 @@ namespace MusicBeePlugin
         NoGradient = 0,
         DoubleColor = 1,
         TripleColor = 2
+    }
+
+    // This corresponds to items of comboBoxAlignment!
+    public enum AlignmentType
+    {
+        Center = 0,
+        Left = 1,
+        Right = 2
     }
 }
