@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using Unmanaged;
 
@@ -90,7 +88,7 @@ namespace MusicBeePlugin
             Redraw();
         }
 
-        public void DrawLyrics1Line(string lyrics)
+        private void DrawLyrics1Line(string lyrics)
         {
             using (var g = CreateGraphics())
             {
@@ -109,7 +107,7 @@ namespace MusicBeePlugin
             }
         }
 
-        public void DrawLyrics2Line(string line1, string line2)
+        private void DrawLyrics2Line(string line1, string line2)
         {
             using (var g = CreateGraphics())
             {
@@ -130,19 +128,10 @@ namespace MusicBeePlugin
 
         private void FrmLyrics_MouseDown(object sender, MouseEventArgs e)
         {
-            if (Visible)
-            {
-                Unmanaged.Unmanaged.ReleaseCapture();
-                if (e.Button != MouseButtons.Left) return;
-                Unmanaged.Unmanaged.SendMessage(Handle, 0x00A1, new IntPtr(0x0002), null);
-            }
-        }
-
-        private void FrmLyrics_MouseUp(object sender, MouseEventArgs e)
-        {
-            // This event is never fired...?
-            //if (e.Button != MouseButtons.Left) return;
-            //global::Unmanaged.Unmanaged.SendMessage(Handle, 0x00A2, new IntPtr(0x0002), null);
+            if (!Visible) return;
+            Unmanaged.Unmanaged.ReleaseCapture();
+            if (e.Button != MouseButtons.Left) return;
+            Unmanaged.Unmanaged.SendMessage(Handle, 0x00A1, new IntPtr(0x0002), null);
         }
 
         protected override CreateParams CreateParams
@@ -150,8 +139,8 @@ namespace MusicBeePlugin
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x00080000; // This form has to have the WS_EX_LAYERED extended style
-                cp.ExStyle |= 0x00000080;
+                cp.ExStyle |= 0x00080000; // WS_EX_LAYERED
+                cp.ExStyle |= 0x00000080; // WS_EX_TOOLWINDOW
                 return cp;
             }
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Windows.Forms;
 
@@ -11,7 +10,8 @@ namespace MusicBeePlugin
     {
         private static readonly Brush ShadowBrush = new SolidBrush(Color.FromArgb(110, 0, 0, 0));
         private const int ShadowOffset = 2;
-        public static readonly StringFormat Format = new StringFormat(StringFormatFlags.NoWrap)
+
+        private static readonly StringFormat Format = new StringFormat(StringFormatFlags.NoWrap)
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Near
@@ -20,9 +20,10 @@ namespace MusicBeePlugin
         private static Pen _borderPen;
         private static Font _mainFont, _subFont;
         private static Color _color1, _color2;
-        private static GredientType _type;
+        private static GradientType _type;
         private static int _width = 1024;
         private static int _dpi = 72;
+
         // Thread unsafe!!!
         public static void UpdateFromSettings(SettingsObj settings, int width)
         {
@@ -35,7 +36,7 @@ namespace MusicBeePlugin
                 EndCap = LineCap.Round,
                 StartCap = LineCap.Round
             };
-            _type = (GredientType)settings.GradientType;
+            _type = (GradientType) settings.GradientType;
             _color1 = settings.Color1;
             _color2 = settings.Color2;
 
@@ -67,7 +68,7 @@ namespace MusicBeePlugin
             }
         }
 
-        public static Bitmap RenderLyrics(string lyric, Font font, IDeviceContext dc)
+        private static Bitmap RenderLyrics(string lyric, Font font, IDeviceContext dc)
         {
             // TODO: bounds returned by `TextRenderer.MeasureTex` differs greatly
             //       from bounds created by `GraphicsPath.AddString`, need further
@@ -122,16 +123,17 @@ namespace MusicBeePlugin
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (_type)
             {
-                case GredientType.DoubleColor:
+                case GradientType.DoubleColor:
                     return new LinearGradientBrush(dstRect.Location, new PointF(dstRect.X, dstRect.Y + dstRect.Height), _color1, _color2)
                     {
                         WrapMode = WrapMode.TileFlipXY
                     };
-                case GredientType.TripleColor:
+                case GradientType.TripleColor:
                     return new LinearGradientBrush(dstRect.Location, new PointF(dstRect.X, dstRect.Y + dstRect.Height / 3 * 2), _color1, _color2)
                     {
                         WrapMode = WrapMode.TileFlipXY
                     };
+                case GradientType.NoGradient:
                 default:
                     return new SolidBrush(_color1);
             }

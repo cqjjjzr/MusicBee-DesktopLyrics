@@ -8,13 +8,14 @@ using System.Text.RegularExpressions;
 
 namespace MusicBeePlugin
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class LyricParser
     {
         private static readonly Regex LyricWordRegex = new Regex(@".*\](.*)", RegexOptions.Compiled);
         private static readonly Regex LyricTimeRegex = new Regex(@"\[([0-9.:]*)\]+(.*?)", RegexOptions.Compiled);
         private static readonly Regex LyricTimeSingleRegex = new Regex(@"(\d+):(\d+)(\.(\d+))?", RegexOptions.Compiled);
 
-        public static bool PreserveSlash { get; set; } = false;
+        public static bool PreserveSlash { get; set; }
 
         public static Lyrics ParseLyric(string lyric)
         {
@@ -92,7 +93,7 @@ namespace MusicBeePlugin
             {
                 if (tableLine2.ContainsKey(rawLyricEntry.Time))
                     continue;
-                else if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
+                if (!PreserveSlash && rawLyricEntry.LyricLine.Contains("/"))
                 {
                     var segs = rawLyricEntry.LyricLine.Split(new[] { '/' }, 2);
                     tableLine1.Add(rawLyricEntry.Time, segs[0]);

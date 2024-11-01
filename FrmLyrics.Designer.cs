@@ -40,17 +40,16 @@ namespace MusicBeePlugin
             // 
             // FrmLyrics
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1449, 326);
+            this.ClientSize = new System.Drawing.Size(1739, 391);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "FrmLyrics";
             this.ShowInTaskbar = false;
-            this.Text = "FrmLyrics";
+            this.Text = "Desktop Lyrics";
             this.Load += new System.EventHandler(this.FrmLyrics_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrmLyrics_MouseDown);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrmLyrics_MouseUp);
             this.ResumeLayout(false);
 
         }

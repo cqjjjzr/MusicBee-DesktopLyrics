@@ -36,7 +36,7 @@
             this.btnBorderColor = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.cbxGradientType = new System.Windows.Forms.ComboBox();
+            this.comboBoxGradientType = new System.Windows.Forms.ComboBox();
             this.checkBoxPreserveSlash = new System.Windows.Forms.CheckBox();
             this.checkBoxAutoHide = new System.Windows.Forms.CheckBox();
             this.checkBoxNextLineWhenNoTranslation = new System.Windows.Forms.CheckBox();
@@ -129,19 +129,19 @@
             // 
             // cbxGradientType
             // 
-            this.cbxGradientType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBoxGradientType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbxGradientType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxGradientType.FormattingEnabled = true;
-            this.cbxGradientType.Items.AddRange(new object[] {
+            this.comboBoxGradientType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxGradientType.FormattingEnabled = true;
+            this.comboBoxGradientType.Items.AddRange(new object[] {
             "No Gradient",
             "Double Color Gradient",
             "Triple Color Gradient"});
-            this.cbxGradientType.Location = new System.Drawing.Point(132, 167);
-            this.cbxGradientType.Margin = new System.Windows.Forms.Padding(4);
-            this.cbxGradientType.Name = "cbxGradientType";
-            this.cbxGradientType.Size = new System.Drawing.Size(242, 23);
-            this.cbxGradientType.TabIndex = 8;
+            this.comboBoxGradientType.Location = new System.Drawing.Point(132, 167);
+            this.comboBoxGradientType.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxGradientType.Name = "comboBoxGradientType";
+            this.comboBoxGradientType.Size = new System.Drawing.Size(242, 23);
+            this.comboBoxGradientType.TabIndex = 8;
             // 
             // checkBoxPreserveSlash
             // 
@@ -210,7 +210,7 @@
             this.Controls.Add(this.checkBoxNextLineWhenNoTranslation);
             this.Controls.Add(this.checkBoxAutoHide);
             this.Controls.Add(this.checkBoxPreserveSlash);
-            this.Controls.Add(this.cbxGradientType);
+            this.Controls.Add(this.comboBoxGradientType);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnBorderColor);
             this.Controls.Add(this.label3);
@@ -238,7 +238,7 @@
         private System.Windows.Forms.Button btnBorderColor;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cbxGradientType;
+        private System.Windows.Forms.ComboBox comboBoxGradientType;
         private System.Windows.Forms.CheckBox checkBoxPreserveSlash;
         private System.Windows.Forms.CheckBox checkBoxAutoHide;
         private System.Windows.Forms.CheckBox checkBoxNextLineWhenNoTranslation;

@@ -61,7 +61,7 @@
             if (currentEntry == null)
             {
                 if (entries.Count <= 0) return null;
-                else currentEntry = entries[entries.Count - 1];
+                currentEntry = entries[entries.Count - 1];
             }
 
             if (_lyrics.HasTranslation || nextEntry == null || !NextLineWhenNoTranslation)

@@ -13,6 +13,7 @@ using Timer = System.Timers.Timer;
 namespace MusicBeePlugin
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    // ReSharper disable once ClassNeverInstantiated.Global
     public partial class Plugin
     {
         private const long UpdateIntervalMs = 100L;
@@ -23,13 +24,13 @@ namespace MusicBeePlugin
         private MusicBeeApiInterface _mbApiInterface;
         private readonly PluginInfo _about = new PluginInfo();
         private string SettingsPath => Path.Combine(_mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName);
-        public string SettingsPath2 => Path.Combine(_mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName2);
+        private string SettingsPath2 => Path.Combine(_mbApiInterface.Setting_GetPersistentStoragePath(), SettingsFileName2);
         // Customed
         private volatile SettingsObj _settings;
         private volatile FrmLyrics _frmLyrics;
         private Timer _timer;
         private LyricsController _lyricsCtrl;
-        private object _lock = new object();
+        private readonly object _lock = new object();
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -55,14 +56,18 @@ namespace MusicBeePlugin
             return _about;
         }
 
+        // ReSharper disable once UnusedParameter.Global
         public bool Configure(IntPtr panelHandle)
         {
             var settingsForm = new FrmSettings(_settings);
             settingsForm.ShowDialog();
             SaveSettings(_settings);
-            _frmLyrics?.UpdateFromSettings(_settings);
             LyricParser.PreserveSlash = _settings.PreserveSlash;
             _lyricsCtrl.NextLineWhenNoTranslation = _settings.NextLineWhenNoTranslation;
+            _frmLyrics?.Invoke(new Action(() =>
+            {
+                _frmLyrics.UpdateFromSettings(_settings);
+            }));
             return true;
         }
 
@@ -77,10 +82,10 @@ namespace MusicBeePlugin
         }
 
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
+        // ReSharper disable once UnusedParameter.Global
         public void Close(PluginCloseReason reason)
         {
             _timer.Stop();
-            var ctrl = Control.FromHandle(_mbApiInterface.MB_GetWindowHandle());
             _frmLyrics?.Invoke(new Action(() =>
             {
                 _frmLyrics?.Hide();
@@ -95,6 +100,7 @@ namespace MusicBeePlugin
             if (File.Exists(SettingsPath2)) File.Delete(SettingsPath2); 
         }
 
+        // ReSharper disable once UnusedParameter.Global
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)
         {
             // perform some action depending on the notification type
@@ -185,7 +191,15 @@ namespace MusicBeePlugin
             // MenuItem will only be returned before we construct the handler lambda expression, so we have to use a "slot"
             // (which will be filled after MB_AddMenuItem returns) to hold the menuItem to be referred in the closure.
             var menuItemSlot = new ToolStripMenuItem[] { null };
-            EventHandler handler = (sender, args) =>
+
+            var menuItem = (ToolStripMenuItem) _mbApiInterface.MB_AddMenuItem(
+                "mnuView/Desktop Lyrics", "Toggle Desktop Lyrics visibility.",
+                ToggleLyrics);
+            menuItemSlot[0] = menuItem;
+            menuItem.Checked = !_settings.HideOnStartup;
+            return;
+
+            void ToggleLyrics(object sender, EventArgs args)
             {
                 var menuItem2 = menuItemSlot[0];
                 if (menuItem2 == null) return; // BUG: multithread race condition
@@ -197,13 +211,7 @@ namespace MusicBeePlugin
                     StartupForm();
                 _settings.HideOnStartup = !menuItem2.Checked;
                 SaveSettings(_settings);
-            };
-
-            var menuItem = (ToolStripMenuItem) _mbApiInterface.MB_AddMenuItem(
-                "mnuView/Desktop Lyrics", "Toggle Desktop Lyrics visibility.",
-                handler);
-            menuItemSlot[0] = menuItem;
-            menuItem.Checked = !_settings.HideOnStartup;
+            }
         }
 
         private void StartupForm()
