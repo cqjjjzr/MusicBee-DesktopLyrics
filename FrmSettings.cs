@@ -22,14 +22,7 @@ namespace MusicBeePlugin
 
         private void Settings_Load(object sender, EventArgs e)
         {
-            try
-            {
-                _font = FontSerializationHelper.Deserialize(_settings.Font);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            _font = _settings.Font;
             try
             {
                 btnFont.Text = _font.Name + " "+ _font.Size;
@@ -86,7 +79,7 @@ namespace MusicBeePlugin
 
         private void Settings_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _settings.Font = FontSerializationHelper.Serialize(_font);
+            _settings.Font = _font;
             _settings.Color1 = btnColor1.BackColor;
             _settings.Color2 = btnColor2.BackColor;
             _settings.BorderColor = btnBorderColor.BackColor;
@@ -100,7 +93,6 @@ namespace MusicBeePlugin
 
     public class SettingsObj
     {
-        public string Font;
         public Color Color1;
         public Color Color2;
         public Color BorderColor;
@@ -113,22 +105,18 @@ namespace MusicBeePlugin
         public bool HideWhenUnavailable;
         public int PosY = -1;
         public int PosX = -1;
-
-        [JsonIgnore]
-        public Font FontActual
-        {
-            get => FontSerializationHelper.Deserialize(Font);
-            set => Font = FontSerializationHelper.Serialize(value);
-        }
+        [JsonConverter(typeof(FontConverter))]
+        public Font Font;
 
         public static SettingsObj GenerateDefault()
         {
+            var font = new Font(FontFamily.GenericSansSerif, 34.0f, FontStyle.Regular, GraphicsUnit.Point);
             return new SettingsObj
             {
                 BorderColor = Color.Black,
                 Color1 = Color.GhostWhite,
                 Color2 = Color.LightGray,
-                FontActual = new Font(FontFamily.GenericSansSerif, 34.0f, FontStyle.Regular, GraphicsUnit.Point),
+                Font = font,
                 GradientType = 1,
                 AlignmentType = 0,
             };

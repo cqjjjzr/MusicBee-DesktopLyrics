@@ -27,7 +27,7 @@ namespace MusicBeePlugin
         // Thread unsafe!!!
         public static void UpdateFromSettings(SettingsObj settings, int width)
         {
-            _mainFont = settings.FontActual;
+            _mainFont = settings.Font;
             _subFont = new Font(_mainFont.FontFamily, _mainFont.Size * 0.8f, _mainFont.Style, _mainFont.Unit, _mainFont.GdiCharSet);
             _borderPen?.Dispose();
             _borderPen = new Pen(settings.BorderColor, 2f)
