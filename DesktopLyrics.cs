@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -60,6 +60,7 @@ namespace MusicBeePlugin
         public bool Configure(IntPtr panelHandle)
         {
             var settingsForm = new FrmSettings(_settings);
+            settingsForm.SettingsChanged += (sender, settings) => _frmLyrics.UpdateFromSettings(settings);
             settingsForm.ShowDialog();
             SaveSettings(_settings);
             LyricParser.PreserveSlash = _settings.PreserveSlash;

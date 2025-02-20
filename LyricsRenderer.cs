@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -10,6 +10,8 @@ namespace MusicBeePlugin
     {
         private static readonly Brush ShadowBrush = new SolidBrush(Color.FromArgb(110, 0, 0, 0));
         private const int ShadowOffset = 2;
+        private const int BackgroundOffsetH = 10;
+        private const int BackgroundOffsetV = 6;
 
         private static readonly StringFormat Format = new StringFormat(StringFormatFlags.NoWrap)
         {
@@ -23,6 +25,7 @@ namespace MusicBeePlugin
         private static GradientType _type;
         private static int _width = 1024;
         private static int _dpi = 72;
+        private static int _backgroundOpacity = 40;
 
         // Thread unsafe!!!
         public static void UpdateFromSettings(SettingsObj settings, int width)
@@ -39,6 +42,7 @@ namespace MusicBeePlugin
             _type = (GradientType)settings.GradientType;
             _color1 = settings.Color1;
             _color2 = settings.Color2;
+            _backgroundOpacity = settings.BackgroundOpacity;
             switch ((AlignmentType)settings.AlignmentType)
             {
                 case AlignmentType.Left:
@@ -89,7 +93,7 @@ namespace MusicBeePlugin
             var fontBounds = TextRenderer.MeasureText(dc, lyric, font);
             var height = fontBounds.Height;
             if (height <= 0) height = 1;
-            var bitmap = new Bitmap(_width, height);
+            var bitmap = new Bitmap(_width, height + BackgroundOffsetV * 2);
             bitmap.SetResolution(_dpi, _dpi);
             using (var g = Graphics.FromImage(bitmap))
             {
@@ -100,10 +104,21 @@ namespace MusicBeePlugin
 
                 var fontEmSize = font.SizeInPoints * _dpi / 72;
 
-                var initialRect = new RectangleF(0, 0, _width, height);
+                var initialRect = new RectangleF(0, BackgroundOffsetV, _width, height);
                 using (var stringPath = new GraphicsPath(FillMode.Alternate))
                 {
                     stringPath.AddString(lyric, font.FontFamily, (int)font.Style, fontEmSize, initialRect, Format);
+
+                    if (_backgroundOpacity > 0)
+                    {
+                        var bounds = stringPath.GetBounds();
+                        using (var brush = new SolidBrush(Color.FromArgb(_backgroundOpacity, 0, 0, 0)))
+                        {
+                            g.FillRectangle(brush, new RectangleF(
+                                bounds.Left - BackgroundOffsetH, 0,
+                                bounds.Width + BackgroundOffsetH * 2, height + 30));
+                        }
+                    }
 
                     // Using matrix to translate the path
                     using (var mat = new Matrix())
