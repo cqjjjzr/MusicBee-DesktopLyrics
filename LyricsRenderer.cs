@@ -108,10 +108,10 @@ namespace MusicBeePlugin
                 using (var stringPath = new GraphicsPath(FillMode.Alternate))
                 {
                     stringPath.AddString(lyric, font.FontFamily, (int)font.Style, fontEmSize, initialRect, Format);
+                    var bounds = stringPath.GetBounds();
 
-                    if (_backgroundOpacity > 0)
+                    if (_backgroundOpacity > 0 && bounds.Width > 0)
                     {
-                        var bounds = stringPath.GetBounds();
                         using (var brush = new SolidBrush(Color.FromArgb(_backgroundOpacity, 0, 0, 0)))
                         {
                             g.FillRectangle(brush, new RectangleF(
